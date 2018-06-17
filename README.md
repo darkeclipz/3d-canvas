@@ -12,6 +12,7 @@ The widget supports the following keys:
  * `Q`, `E` to go up/down.
  * `Z` shows the vertex ID.
  * `X` shows the 2D vertex coordinates.
+ * `1` animate the cube scale.
 
  The angle of the camera can be changed with the mouse.
 

@@ -9,3 +9,7 @@ var rnd = function(value,decimals) {
     factor=Math.pow(10,decimals)
     return Math.round(value*factor)/factor;
 }
+
+var bool2int = function(b) {
+    return b ? 1 : 0;
+}

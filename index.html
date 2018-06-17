@@ -31,13 +31,14 @@
             mouseSensitivity = 500,
             fontFamily = "Orbitron",
             showVertexIndex = true,
-            showVertex2DCoordinates = true;
+            showVertex2DCoordinates = true,
+            animateScale = true;
 
         // Set an initial position for the camera.
         camera.position = new Vec3(-4.68, -1, -6.66);
         camera.rotation = new Vec2(-0.62, -0.18);
 
-        // Transforms the point in 3D space to 2D.
+        // Transforms the point in 3D space to 2D screen coordinates.
         var transform = function(vertex, camera) {
             var x = vertex.x - camera.position.x, 
                 y = vertex.y - camera.position.y, 
@@ -71,6 +72,7 @@
                 case 69:          camera.position.y += cameraMoveSpeed;               break; // Down
                 case 90:          showVertexIndex = !showVertexIndex;                 break; // Show vertex index
                 case 88:          showVertex2DCoordinates = !showVertex2DCoordinates; break; // Show vertex 2d coordinates
+                case 49:          animateScale = !animateScale;                       break; // Animate the cube scale
                 default: if(verbose) console.log("Key pressed: " + e.key + " (" + e.keyCode + ")"); break;
             }
         }
@@ -102,7 +104,7 @@
             clear();
 
             cube = new Cube();
-            cube.scale(2);
+            cube.scale(2 + Math.sin(currentFrame / 100 * Math.PI * 2) * bool2int(animateScale));
             font("20px " + fontFamily);
 
             // Connect a line between two vertices.
@@ -138,9 +140,10 @@
             uitext(10,45,"Current frame: " + currentFrame);
             uitext(10,65,"Camera position: " + camera.position.toString());
             uitext(10,85,"Camera rotation: " + camera.rotation.toString());
-            uitext(10,innerHeight-15,"Show vertex ID (Z): " + showVertexIndex);
-            uitext(10,innerHeight-35,"Show vertex 2D coordinates (X): " + showVertex2DCoordinates);
-            uitext(10,innerHeight-55,"You can move with W, A, S, D, and go up/down with Q, E.");
+            uitext(10,innerHeight-15,"Animate scale (1): " + animateScale)
+            uitext(10,innerHeight-35,"Show vertex ID (Z): " + showVertexIndex);
+            uitext(10,innerHeight-55,"Show vertex 2D coordinates (X): " + showVertex2DCoordinates);
+            uitext(10,innerHeight-75,"You can move with W, A, S, D, and go up/down with Q, E.");
 
             currentFrame++;
             if(rendering) {
