@@ -2,6 +2,8 @@
 
 This example shows a 3D to 2D projection of a cube.
 
+[Check out the live demo.](https://darkeclipz.github.io/simple-3d-to-2d-projection/)
+
 ## Keys
 
 The widget supports the following keys:
