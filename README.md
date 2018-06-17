@@ -18,6 +18,7 @@ More examples (previous versions):
 
  * [Single cube](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-single-cube.html)
  * [3x3 grid](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-3x3-grid.html)
+ * [Faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-faces.html)
 
 ## Keys
 

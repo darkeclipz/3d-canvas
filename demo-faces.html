@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title>Simple 3D to 2D projection</title>
+        <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+    </head>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; overflow: hidden; }
+        #render { position: absolute; }
+    </style>
+    <body>
+        <canvas id="render"></canvas>
+    </body>
+    <script src="draw.js"></script>
+    <script src="control.js"></script>
+    <script src="math.js"></script>
+    <script src="vec.js"></script>
+    <script src="camera.js"></script>
+    <script src="mesh.js"></script>
+    <script>
+
+        // Settings for the rendering.
+        var rendering = true, 
+            fps = 30,
+            refreshRate = 1000/fps,
+            currentFrame = 0,
+            fov = Math.min(innerWidth,innerHeight),
+            camera = new Camera(fov),
+            verbose = false,
+            cameraMoveSpeed = 0.1,
+            mouseSensitivity = 500,
+            fontFamily = "Orbitron",
+            meshes = [];
+
+        // Set an initial position for the camera.
+        //camera.position = new Vec3(-5.91, -4.1, -7.84);
+        //camera.rotation = new Vec2(-0.62, -0.43);
+
+        // Transforms the point in 3D space to 2D screen coordinates.
+        var transform = function(vertex, camera) {
+            var x = vertex.x - camera.position.x, 
+                y = vertex.y - camera.position.y, 
+                z = vertex.z - camera.position.z;
+
+            var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
+            x = rotX.x;
+            z = rotX.y;
+
+            var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
+            y = rotY.x;
+            z = rotY.y;
+
+            var f = camera.fov / z;
+            return new Vec2(x * f, y * f);
+        }
+
+        // Handles the movement with the keyboard.
+        var handleKeys = function(e) {
+
+            // Determine the correct (x,y) movement (applies camera rotation).
+            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
+                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
+
+            switch(e.keyCode) {
+                case 87: case 38: camera.position.x -= x; camera.position.z += y;     break; // Forward
+                case 83: case 40: camera.position.x += x; camera.position.z -= y;     break; // Backward
+                case 65: case 37: camera.position.x -= y; camera.position.z -= x;     break; // Right
+                case 68: case 39: camera.position.x += y; camera.position.z += x;     break; // Left
+                case 81:          camera.position.y -= cameraMoveSpeed;               break; // Up
+                case 69:          camera.position.y += cameraMoveSpeed;               break; // Down
+                default: if(verbose) console.log("Key pressed: " + e.key + " (" + e.keyCode + ")"); break;
+            }
+        }
+
+        // Rotates the camera with the mouse.
+        var prevMouseX = 0, prevMouseY = 0, mouseInit=false;
+        var handlePointer = function(e) {
+            if(!mouseInit) {
+                prevMouseX = e.pageX;
+                prevMouseY = e.pageY;
+                mouseInit=true;
+                return;
+            }
+
+            dx = e.pageX - prevMouseX;
+            dy = e.pageY - prevMouseY;
+
+            camera.rotation.x -= dx / mouseSensitivity;
+            camera.rotation.y -= dy / mouseSensitivity;
+
+            prevMouseX = e.pageX;
+            prevMouseY = e.pageY;
+
+            if(verbose) console.log(e);
+        }
+
+        // Add all the meshes.
+        meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+
+        // Move the cubes.
+        meshes[0].translate(new Vec3(2,0,0));
+        meshes[1].translate(new Vec3(-2,0,0));
+
+        // Main render loop.
+        var render = function() {
+            clear();
+            font("16px " + fontFamily);
+
+            // Rotate the cubes as animation. First we need to translate
+            // the cube back to the origin (0,0,0), then rotate, and translate
+            // back to the position.
+            meshes[0].translate(new Vec3(-2,0,0));
+            meshes[1].translate(new Vec3(2,0,0));
+            meshes[0].rotateY(1/(8*Math.PI));
+            meshes[1].rotateY(-1/(16*Math.PI));
+            meshes[0].translate(new Vec3(2,0,0));
+            meshes[1].translate(new Vec3(-2,0,0));
+
+            // Draw all the meshes.
+            for(var i=0; i < meshes.length; i++) {
+                mesh = meshes[i];
+
+                // Calculate the distance of a face to the camera, and add it to a depth buffer.
+                depthBuffer = [];
+                for(var j=0; j < mesh.faces.length; j++) {
+                    distance = camera.position.distance(mesh.faces[j].average(mesh.vertices));
+                    depthBuffer.push({'face': j, 'distance': distance});
+                }
+
+                // Sort the depth buffer on distance, we want to draw the furthest face first.
+                depthBuffer.sort(function(a, b) { return b.distance - a.distance});
+
+                // Draw each face in the depth buffer.
+                for(var j=0; j < depthBuffer.length; j++) {
+                    index = depthBuffer[j].face;
+                    points = [];
+                    for(k=0; k < mesh.faces[index].vertices.length; k++) {
+                        v = mesh.vertices[mesh.faces[index].vertices[k]];
+                        transformed = transform(v, camera);
+                        points.push({'x': transformed.x, 'y': transformed.y});
+                    }
+                    color(mesh.faces[index].color);
+                    polygon(points);
+                }
+            }
+
+            // Post-render
+            font("16px " + fontFamily);
+            color(CL_WHITE);
+            uitext(10,25,"FPS: " + fps + ", FOV: " + fov);
+            uitext(10,45,"Current frame: " + currentFrame);
+            uitext(10,65,"Camera position: " + camera.position.toString());
+            uitext(10,85,"Camera rotation: " + camera.rotation.toString());
+            uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
+
+            currentFrame++;
+            if(rendering) {
+                setTimeout(render, refreshRate);
+            }
+        }
+
+        // Initialize the canvas and events.
+        ctx = initCanvasContext("render");
+        ctx.lineWidth = 2;
+        center(); // (0,0) should be the screen center.
+        bindKeydown(handleKeys);
+        bindPointer(handlePointer);
+        render();
+    </script>
+</html>
