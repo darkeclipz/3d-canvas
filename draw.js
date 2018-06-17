@@ -60,12 +60,18 @@ var line = function(x1,y1,x2,y2,thickness) {
         console.log(errorCtxNotDefined);
         return;
     }
+    var lineWidth = ctx.lineWidth;
+    if(thickness != null) {
+        ctx.lineWidth = thickness;
+    }
     ctx.beginPath();
     ctx.moveTo(x1+offsetX,y1+offsetY);
     ctx.lineTo(x2+offsetX,y2+offsetY);
     ctx.stroke();
+    ctx.lineWidth = lineWidth;
 }
 
+// Draw a polygon.
 var polygon = function(points) {
     if(ctx == null) {
         console.log(errorCtxNotDefined);

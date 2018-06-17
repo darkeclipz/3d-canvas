@@ -134,13 +134,14 @@
                 // Draw each face in the depth buffer.
                 for(var j=0; j < depthBuffer.length; j++) {
                     index = depthBuffer[j].face;
+                    face = mesh.faces[index];
                     points = [];
-                    for(k=0; k < mesh.faces[index].vertices.length; k++) {
-                        v = mesh.vertices[mesh.faces[index].vertices[k]];
+                    for(k=0; k < face.vertices.length; k++) {
+                        v = mesh.vertices[face.vertices[k]];
                         transformed = transform(v, camera);
                         points.push({'x': transformed.x, 'y': transformed.y});
                     }
-                    color(mesh.faces[index].color);
+                    color(face.color);
                     polygon(points);
                 }
             }
@@ -162,7 +163,6 @@
 
         // Initialize the canvas and events.
         ctx = initCanvasContext("render");
-        ctx.lineWidth = 2;
         center(); // (0,0) should be the screen center.
         bindKeydown(handleKeys);
         bindPointer(handlePointer);
