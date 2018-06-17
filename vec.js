@@ -12,7 +12,14 @@ function Vec3(x,y,z) {
     this.scale = function(scalar) {
         return new Vec3(scalar*this.x, scalar*this.y, scalar*this.z);
     }
-    this.dot = function(v) {
+    this.rotateY = function(angle) {
+        return new Vec3(this.x * Math.cos(angle) - this.z * Math.sin(angle),
+                        this.y,
+                        this.x * Math.sin(angle) + this.z * Math.cos(angle));
+    }
+    // Sorry, no X or Z: check http://mathworld.wolfram.com/RotationMatrix.html, and implement it yourself.
+
+    this.dot = function(v) { 
         return this.x*v.x + this.y*v.y + this.z*v.z;
     }
     this.length = function() {
