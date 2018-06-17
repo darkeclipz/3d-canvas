@@ -1,3 +1,21 @@
+// Transforms the point in 3D space to 2D screen coordinates.
+var transform = function(vertex, camera) {
+    var x = vertex.x - camera.position.x, 
+        y = vertex.y - camera.position.y, 
+        z = vertex.z - camera.position.z;
+
+    var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
+    x = rotX.x;
+    z = rotX.y;
+
+    var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
+    y = rotY.x;
+    z = rotY.y;
+
+    var f = camera.fov / z;
+    return new Vec2(x * f, y * f);
+}
+
 // Performs a rotation in 2D.
 var rotate2d = function(v, theta) {
     return new Vec2(v.y * Math.sin(theta) + v.x * Math.cos(theta),

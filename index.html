@@ -36,26 +36,19 @@
         //camera.position = new Vec3(-5.91, -4.1, -7.84);
         //camera.rotation = new Vec2(-0.62, -0.43);
 
-        // Transforms the point in 3D space to 2D screen coordinates.
-        var transform = function(vertex, camera) {
-            var x = vertex.x - camera.position.x, 
-                y = vertex.y - camera.position.y, 
-                z = vertex.z - camera.position.z;
-
-            var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
-            x = rotX.x;
-            z = rotX.y;
-
-            var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
-            y = rotY.x;
-            z = rotY.y;
-
-            var f = camera.fov / z;
-            return new Vec2(x * f, y * f);
+        // Handles movement with the mouse.
+        var mouseCallback = function(e) {
+            registerMouseCallback(); // Register and deregisters the mousemove
+                                     // event when the pointer lock changes.
+            var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+            var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+            camera.rotation.x -= movementX / mouseSensitivity;
+            camera.rotation.y -= movementY / mouseSensitivity;
+            if(verbose) console.log(e);
         }
 
         // Handles the movement with the keyboard.
-        var handleKeys = function(e) {
+        var keydownCallback = function(e) {
 
             // Determine the correct (x,y) movement (applies camera rotation).
             var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
@@ -70,28 +63,6 @@
                 case 69:          camera.position.y += cameraMoveSpeed;               break; // Down
                 default: if(verbose) console.log("Key pressed: " + e.key + " (" + e.keyCode + ")"); break;
             }
-        }
-
-        // Rotates the camera with the mouse.
-        var prevMouseX = 0, prevMouseY = 0, mouseInit=false;
-        var handlePointer = function(e) {
-            if(!mouseInit) {
-                prevMouseX = e.pageX;
-                prevMouseY = e.pageY;
-                mouseInit=true;
-                return;
-            }
-
-            dx = e.pageX - prevMouseX;
-            dy = e.pageY - prevMouseY;
-
-            camera.rotation.x -= dx / mouseSensitivity;
-            camera.rotation.y -= dy / mouseSensitivity;
-
-            prevMouseX = e.pageX;
-            prevMouseY = e.pageY;
-
-            if(verbose) console.log(e);
         }
 
         // Add all the meshes.
@@ -162,10 +133,12 @@
         }
 
         // Initialize the canvas and events.
+        canvas = document.getElementById("render");
         ctx = initCanvasContext("render");
         center(); // (0,0) should be the screen center.
-        bindKeydown(handleKeys);
-        bindPointer(handlePointer);
+        bindKeydown(keydownCallback);
+        bindClick(pointerLockCallback);
+        bindPointer(mouseCallback);
         render();
     </script>
 </html>

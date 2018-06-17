@@ -1,9 +1,54 @@
 var bindKeydown = function(func) {
-    window.addEventListener('keydown', func, false);
+    document.addEventListener('keydown', func, false);
 }
 var bindKeyup = function(func) {
-    window.addEventListener('keyup', func, false);
+    document.addEventListener('keyup', func, false);
 }
 var bindPointer = function(func) {
-    window.addEventListener('mousemove', func, false);
+    document.addEventListener('pointerlockchange', func, false);
+    document.addEventListener('mozpointerlockchange', func, false);
+    document.addEventListener('webkitpointerlockchange', func, false);  
+}
+var bindClick = function(func) {
+    document.addEventListener('click', func, false);
+}
+var pointerLockCallback = function pointerLock() {
+    var check_pointerLock = 'pointerLockElement' in document ||
+    'mozPointerLockElement' in document ||
+    'webkitPointerLockElement' in document;
+
+    if(check_pointerLock){
+        if(verbose) console.log("Pointer lock exists");
+
+        canvas.requestPointerLock = canvas.requestPointerLock ||
+            canvas.mozRequestPointerLock ||
+            canvas.webkitRequestPointerLock;
+            
+        canvas.requestPointerLock();
+
+        document.addEventListener('pointerlockerror', errorCallback, false);
+        document.addEventListener('mozpointerlockerror', errorCallback, false);
+        document.addEventListener('webkitpointerlockerror', errorCallback, false);
+
+        if (!!document.pointerLockElement) {
+            if(verbose) console.log("locked");
+        } 
+        else {
+
+            if(verbose) console.log("not locked");
+        }
+    }
+    function errorCallback() {
+        console.log("There was an error");
+
+    }
+}
+var registerMouseCallback = function() {
+    if (document.pointerLockElement === canvas ||
+        document.mozPointerLockElement === canvas ||
+        document.webkitPointerLockElement === canvas) {
+        document.addEventListener("mousemove", mouseCallback, false);
+    } else {
+        document.removeEventListener("mousemove", mouseCallback, false);
+    }
 }

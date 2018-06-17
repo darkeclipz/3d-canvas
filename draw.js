@@ -122,12 +122,12 @@ var color = function(c) {
 }
 
 // Set a font.
-var font = function(fontString) {
+var font = function(f) {
     if(ctx == null) {
         console.log(errorCtxNotDefined);
         return;
     }
-    ctx.font = fontString;
+    ctx.font = f;
 }
 
 // Draw a string without the offset.
