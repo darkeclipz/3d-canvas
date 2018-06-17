@@ -24,8 +24,20 @@ function Edge(a,b) {
     this.b = b;
 }
 
-function Face(vertices) {
+function Face(vertices, color) {
     this.vertices = vertices;
+    this.color = color;
+
+    // Calculates the average vertex position.
+    this.average = function(vertexLookup) {
+        var x = 0, y = 0; z = 0;
+        for(var i=0; i < this.vertices.length; i++) {
+            v = vertexLookup[this.vertices[i]];
+            x += v.x; y += v.y; z += v.z;
+        }
+        x /= this.vertices.length; y /= this.vertices.length; z /= this.vertices.length;
+        return new Vec3(x,y,z);
+    }
 }
 
 function generateCubeMesh() {
@@ -50,5 +62,11 @@ function generateCubeMesh() {
     mesh.edges.push(new Edge(1,5));
     mesh.edges.push(new Edge(2,6));
     mesh.edges.push(new Edge(3,7));
+    mesh.faces.push(new Face([0,1,2,3], 'red'));
+    mesh.faces.push(new Face([0,3,7,4], 'lime'));
+    mesh.faces.push(new Face([5,4,7,6], 'blue'));
+    mesh.faces.push(new Face([1,5,6,2], 'yellow'));
+    mesh.faces.push(new Face([3,2,6,7], 'grey'));
+    mesh.faces.push(new Face([0,1,5,4], 'grey'));
     return mesh;
 }

@@ -2,8 +2,9 @@
 const CL_WHITE  = "#ffffff";
 const CL_BLACK  = "#000000";
 const CL_RED    = "#ff0000";
-const CL_BLUE   = "#00ff00";
-const CL_GREEN  = "#0000ff";
+const CL_BLUE   = "#0000ff";
+const CL_GREEN  = "#00ff00";
+const CL_GRAY   = "#888888";
 
 // Variables.
 var ctx;
@@ -65,22 +66,35 @@ var line = function(x1,y1,x2,y2,thickness) {
     ctx.stroke();
 }
 
-// Set the fill color.
-var fillColor = function(hex) {
+var polygon = function(points) {
     if(ctx == null) {
         console.log(errorCtxNotDefined);
         return;
     }
-    ctx.fillStyle = hex;
+    ctx.beginPath();
+    for(var i=0; i<points.length; i++){
+        ctx.lineTo(points[i].x + offsetX, points[i].y + offsetY);
+    }
+    ctx.lineTo(points[0].x + offsetX, points[0].y + offsetY);
+    ctx.fill();
+}
+
+// Set the fill color.
+var fillColor = function(c) {
+    if(ctx == null) {
+        console.log(errorCtxNotDefined);
+        return;
+    }
+    ctx.fillStyle = c;
 }
 
 // Set the stroke color.
-var strokeColor = function(hex) {
+var strokeColor = function(c) {
     if(ctx == null) {
         console.log(errorCtxNotDefined);
         return;
     }
-    ctx.strokeStyle = hex;
+    ctx.strokeStyle = c;
 }
 
 // Clear the canvas, defaults to 'backgroundColor'.
@@ -96,9 +110,9 @@ var clear = function() {
 }
 
 // Set the fill and stroke color.
-var color = function(hex) {
-    fillColor(hex);
-    strokeColor(hex);
+var color = function(c) {
+    fillColor(c);
+    strokeColor(c);
 }
 
 // Set a font.

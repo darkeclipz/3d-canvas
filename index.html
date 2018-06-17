@@ -32,8 +32,6 @@
             fontFamily = "Orbitron",
             meshes = [];
 
-        meshes.push(generateCubeMesh());
-
         // Set an initial position for the camera.
         //camera.position = new Vec3(-5.91, -4.1, -7.84);
         //camera.rotation = new Vec2(-0.62, -0.43);
@@ -96,33 +94,54 @@
             if(verbose) console.log(e);
         }
 
+        // Add all the meshes.
+        meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+
+        // Move the cubes.
+        meshes[0].translate(new Vec3(2,0,0));
+        meshes[1].translate(new Vec3(-2,0,0));
+
         // Main render loop.
         var render = function() {
             clear();
-            color(CL_RED);
+            font("16px " + fontFamily);
 
-            // 3x3 cube grid
-            //meshes = [];
-            //var spacing = 1 + (Math.cos(currentFrame/25) + 1)/5;
-            // for(var i=0; i<3; i++) {
-            //     for(var j=0; j<3; j++) {
-            //         for(var k=0; k<3; k++) {
-            //             cube = generateCubeMesh();
-            //             cube.scale(0.5);
-            //             cube.translate(new Vec3(spacing*i, spacing*k, spacing*j));
-            //             meshes.push(cube);
-            //         }
-            //     }
-            // }
+            // Rotate the cubes as animation. First we need to translate
+            // the cube back to the origin (0,0,0), then rotate, and translate
+            // back to the position.
+            meshes[0].translate(new Vec3(-2,0,0));
+            meshes[1].translate(new Vec3(2,0,0));
+            meshes[0].rotateY(1/(16*Math.PI));
+            meshes[1].rotateY(-1/(16*Math.PI));
+            meshes[0].translate(new Vec3(2,0,0));
+            meshes[1].translate(new Vec3(-2,0,0));
 
-            // Draw a line between all the vertices that are in the edges.
+            // Draw all the meshes.
             for(var i=0; i < meshes.length; i++) {
                 mesh = meshes[i];
-                for(var j=0; j < mesh.edges.length; j++) {
-                    edge = mesh.edges[j];
-                    v = transform(mesh.vertices[edge.a], camera);
-                    u = transform(mesh.vertices[edge.b], camera);
-                    line(v.x, v.y, u.x, u.y);
+
+                // Calculate the distance of a face to the camera, and add it to a depth buffer.
+                depthBuffer = [];
+                for(var j=0; j < mesh.faces.length; j++) {
+                    distance = camera.position.distance(mesh.faces[j].average(mesh.vertices));
+                    depthBuffer.push({'face': j, 'distance': distance});
+                }
+
+                // Sort the depth buffer on distance, we want to draw the furthest face first.
+                depthBuffer.sort(function(a, b) { return b.distance - a.distance});
+
+                // Draw each face in the depth buffer.
+                for(var j=0; j < depthBuffer.length; j++) {
+                    index = depthBuffer[j].face;
+                    points = [];
+                    for(k=0; k < mesh.faces[index].vertices.length; k++) {
+                        v = mesh.vertices[mesh.faces[index].vertices[k]];
+                        transformed = transform(v, camera);
+                        points.push({'x': transformed.x, 'y': transformed.y});
+                    }
+                    color(mesh.faces[index].color);
+                    polygon(points);
                 }
             }
 
