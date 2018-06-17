@@ -13,9 +13,10 @@ The widget supports the following keys:
  * `Z` shows the vertex ID.
  * `X` shows the 2D vertex coordinates.
  * `1` animate the cube scale.
+ * `2` animate the cube rotation.
 
  The angle of the camera can be changed with the mouse.
 
 ## Onward
 
-Add faces for the cube.
+Add faces for the cube. Requires a depth buffer for a correct drawing order.

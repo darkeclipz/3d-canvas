@@ -40,4 +40,14 @@ function Cube() {
             this.vertices[i] = this.vertices[i].add(v);
         }
     }
+
+    // Rotate around a fixed axis, in this case Y.
+    this.rotate = function(theta) {
+        for(var i=0; i < this.vertices.length; i++) {
+            var x = this.vertices[i].x * Math.cos(theta) - this.vertices[i].z * Math.sin(theta);
+            var y = this.vertices[i].y;
+            var z = this.vertices[i].x * Math.sin(theta) + this.vertices[i].z * Math.cos(theta);
+            this.vertices[i] = new Vec3(x,y,z);
+        }
+    }
 }
