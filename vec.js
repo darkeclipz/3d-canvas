@@ -1,0 +1,50 @@
+// XYZ Vector: encapsulated vector maths.
+function Vec3(x,y,z) {
+    this.x=x;
+    this.y=y;
+    this.z=z;
+    this.toString = function() {
+        return "(" + rnd(this.x,2) + ", " + rnd(this.y,2) + ", " + rnd(this.z,2) + ")";
+    }
+    this.add = function(v) {
+        return new Vec3(this.x+v.x, this.y+v.y, this.z+v.z);
+    }
+    this.scale = function(scalar) {
+        return new Vec3(scalar*this.x, scalar*this.y, scalar*this.z);
+    }
+    this.dot = function(v) {
+        return this.x*v.x + this.y*v.y + this.z*v.z;
+    }
+    this.length = function() {
+        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    }
+    this.distance = function(v) {
+        x = this.x-v.x; y = this.y-v.y; z = this.z-v.z;
+        return Math.sqrt(x*x + y*y + z*z);
+    }
+}
+
+// XY Vector: encapsulated vector maths.
+function Vec2(x,y) {
+    this.x=x;
+    this.y=y;
+    this.toString = function() {
+        return "(" + rnd(this.x,2) + ", " + rnd(this.y,2) + ")";
+    }
+    this.add = function(v) {
+        return new Vec2(this.x+v.x, this.y+v.y);
+    }
+    this.scale = function(scalar) {
+        return new Vec2(scalar*this.x, scalar*this.y);
+    }
+    this.dot = function(v) {
+        return this.x*v.x + this.y*v.y;
+    }
+    this.length = function() {
+        return Math.sqrt(this.x*this.x + this.y*this.y);
+    }
+    this.distance = function(v) {
+        x = this.x-v.x; y = this.y-v.y;
+        return Math.sqrt(x*x + y*y);
+    }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title>Simple 3D to 2D projection</title>
+        <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+    </head>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; overflow: hidden; }
+        #render { position: absolute; }
+    </style>
+    <body>
+        <canvas id="render"></canvas>
+    </body>
+    <script src="draw.js"></script>
+    <script src="control.js"></script>
+    <script src="math.js"></script>
+    <script src="vec.js"></script>
+    <script src="camera.js"></script>
+    <script src="cube.js"></script>
+    <script>
+
+        // Settings for the rendering.
+        var rendering = true, 
+            fps = 30,
+            refreshRate = 1000/fps,
+            currentFrame = 0,
+            fov = Math.min(innerWidth,innerHeight),
+            camera = new Camera(fov),
+            verbose = false,
+            cameraMoveSpeed = 0.1,
+            mouseSensitivity = 500,
+            fontFamily = "Orbitron",
+            showVertexIndex = true,
+            showVertex2DCoordinates = true;
+
+        // Set an initial position for the camera.
+        camera.position = new Vec3(-4.68, -1, -6.66);
+        camera.rotation = new Vec2(-0.62, -0.18);
+
+        // Transforms the point in 3D space to 2D.
+        var transform = function(vertex, camera) {
+            var x = vertex.x - camera.position.x, 
+                y = vertex.y - camera.position.y, 
+                z = vertex.z - camera.position.z;
+
+            var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
+            x = rotX.x;
+            z = rotX.y;
+
+            var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
+            y = rotY.x;
+            z = rotY.y;
+
+            var f = camera.fov / z;
+            return new Vec2(x * f, y * f);
+        }
+
+        // Handles the movement with the keyboard.
+        var handleKeys = function(e) {
+
+            // Determine the correct (x,y) movement (applies camera rotation).
+            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
+                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
+
+            switch(e.keyCode) {
+                case 87: case 38: camera.position.x -= x; camera.position.z += y;     break; // Forward
+                case 83: case 40: camera.position.x += x; camera.position.z -= y;     break; // Backward
+                case 65: case 37: camera.position.x -= y; camera.position.z -= x;     break; // Right
+                case 68: case 39: camera.position.x += y; camera.position.z += x;     break; // Left
+                case 81:          camera.position.y -= cameraMoveSpeed;               break; // Up
+                case 69:          camera.position.y += cameraMoveSpeed;               break; // Down
+                case 90:          showVertexIndex = !showVertexIndex;                 break; // Show vertex index
+                case 88:          showVertex2DCoordinates = !showVertex2DCoordinates; break; // Show vertex 2d coordinates
+                default: if(verbose) console.log("Key pressed: " + e.key + " (" + e.keyCode + ")"); break;
+            }
+        }
+
+        // Rotates the camera with the mouse.
+        var prevMouseX = 0, prevMouseY = 0, mouseInit=false;
+        var handlePointer = function(e) {
+            if(!mouseInit) {
+                prevMouseX = e.pageX;
+                prevMouseY = e.pageY;
+                mouseInit=true;
+                return;
+            }
+
+            dx = e.pageX - prevMouseX;
+            dy = e.pageY - prevMouseY;
+
+            camera.rotation.x -= dx / mouseSensitivity;
+            camera.rotation.y -= dy / mouseSensitivity;
+
+            prevMouseX = e.pageX;
+            prevMouseY = e.pageY;
+
+            if(verbose) console.log(e);
+        }
+
+        // Main render loop.
+        var render = function() {
+            clear();
+
+            cube = new Cube();
+            cube.scale(2);
+            font("20px " + fontFamily);
+
+            // Connect a line between two vertices.
+            for(var i=0; i < cube.edges.length; i++) {
+                color(CL_RED);
+                edge = cube.edges[i];
+                v = transform(cube.vertices[edge.x], camera);
+                u = transform(cube.vertices[edge.y], camera);
+                line(v.x,v.y,u.x,u.y);
+
+                if(showVertexIndex) {
+                    color(CL_WHITE);
+                    text(v.x,v.y-10,edge.x);
+                }
+            }
+
+            color(CL_WHITE);
+            font("12px " + fontFamily);
+
+            // Draw the vertices if they should be drawn.
+            if(showVertex2DCoordinates) {
+                for(var i=0; i < cube.vertices.length; i++) {
+                    vertex = transform(cube.vertices[i], camera);
+                    circle(vertex.x, vertex.y, 3);
+                    text(vertex.x+5,vertex.y+5, vertex.toString());
+                }
+            }
+
+            // Post-render
+            font("16px " + fontFamily);
+            color(CL_WHITE);
+            uitext(10,25,"FPS: " + fps + ", FOV: " + fov);
+            uitext(10,45,"Current frame: " + currentFrame);
+            uitext(10,65,"Camera position: " + camera.position.toString());
+            uitext(10,85,"Camera rotation: " + camera.rotation.toString());
+            uitext(10,innerHeight-15,"Show vertex ID (Z): " + showVertexIndex);
+            uitext(10,innerHeight-35,"Show vertex 2D coordinates (X): " + showVertex2DCoordinates);
+            uitext(10,innerHeight-55,"You can move with W, A, S, D, and go up/down with Q, E.");
+
+            currentFrame++;
+            if(rendering) {
+                setTimeout(render, refreshRate);
+            }
+        }
+
+        // Initialize the canvas and events.
+        ctx = initCanvasContext("render");
+        ctx.lineWidth = 2;
+        center(); // (0,0) should be the screen center.
+        bindKeydown(handleKeys);
+        bindPointer(handlePointer);
+        render();
+    </script>
+</html>
