@@ -35,9 +35,10 @@
             clipMargin = 250,
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
 
-        camera.position = new Vec3(1.75, -1.1, 2.6);
-        camera.rotation = new Vec2(-7.1, -0.51);
-        keysToggled[KEY_Z] = true; // Enable display faces.
+        camera.position = new Vec3(14.94, 0.3, 14.47);
+        camera.rotation = new Vec2(-8.62, -0.67);
+        keysToggled[KEY_X] = true; // Enable wireframe.
+        
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -91,6 +92,11 @@
                 var t = currentFrame/5;
                 var y = amplitude*Math.cos(period*(x+t)) + amplitude*Math.sin(period*(z+t));
                 cube.translate(new Vec3(0, y, 0));
+            }
+
+            // Rotate the camera if the mouse is not locked.
+            if(!mouseLocked) {
+                camera.rotation.x -= 0.01;
             }
 
             // Fill the depth buffer with all the faces from all the meshes.
