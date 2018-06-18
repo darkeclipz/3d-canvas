@@ -33,10 +33,10 @@
             meshes = [],
             mouseLocked = false;
 
-        camera.position = new Vec3(-7.84, -1.4, -8.66);
-        camera.rotation = new Vec2(-0.83, -0.47);
-
-        keysToggled[KEY_Z] = true; // Enable display faces.
+        camera.position = new Vec3(-3.22, 0, -7.53);
+        camera.rotation = new Vec2(-0.64, -0.1);
+        keysToggled[KEY_X] = true; // Enable display wireframe.
+        keysToggled[KEY_C] = true; // Enable disply coordinates.
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -48,17 +48,25 @@
             camera.rotation.y -= movementY / mouseSensitivity;
         }
 
-        // Create a cube mesh.
-        var gridSize = 16;
-        var cubeGroup = new MeshGroup();
-        for(var i=0; i < gridSize; i++) {
-            for(var j=0; j < gridSize; j++) {
-                cube = generateCubeMesh();
-                cube.translate(new Vec3(2*i, 10, 2*j));
-                meshes.push(cube);
-                cubeGroup.meshes.push(cube);
-            }
+        // Create two cubes and a floor.
+        meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+        var cube1 = meshes[0], cube2 = meshes[1], floor = meshes[2], cube3 = meshes[3];
+
+        // Move the cubes.
+        cube1.translate(new Vec3(2,0,0));
+        cube2.translate(new Vec3(-2,0,0));
+        cube3.translate(new Vec3(10,0,0))
+
+        // Create the floor.
+        for(var i=0; i < floor.faces.length; i++) {
+            floor.faces[i].color = CL_GRAY;
         }
+        floor.faces[floor.faces.length-2].color = "#333";
+        floor.vmult(new Vec3(3, 0.02, 3));
+        floor.translate(new Vec3(0,3,0));
 
         // Main render loop.
         var render = function() {
@@ -78,19 +86,15 @@
             if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
 
-            // Animate all the cubes, f(x,y) = sin(x) + cos(y) gives a wave pattern, where the output is used for the
-            // height, which is y in our coordinate system, thus it becomes: y = sin(x) + cos(z).
-            // https://academo.org/demos/3d-surface-plotter/?expression=sin(x)%2Bcos(y)&xRange=-10%2C10&yRange=-10%2C10&resolution=51
-            for(var i=0; i < cubeGroup.meshes.length; i++) {
-                var cube = cubeGroup.meshes[i];
-                var x = cube.vertices[0].x;
-                var z = cube.vertices[0].z;
-                var amplitude = 1/50;
-                var period = 1/4;
-                var t = currentFrame/5;
-                var y = amplitude*Math.cos(period*(x+t)) + amplitude*Math.sin(period*(z+t));
-                cube.translate(new Vec3(0, y, 0));
-            }
+            // Rotate the cubes as animation. First we need to translate
+            // the cube back to the origin (0,0,0), then rotate, and translate
+            // back to the position.
+            cube1.translate(new Vec3(-2,0,0));
+            cube2.translate(new Vec3(2,0,0));
+            cube1.rotateY(1/(8*Math.PI));
+            cube2.rotateY(-1/(16*Math.PI));
+            cube1.translate(new Vec3(2,0,0));
+            cube2.translate(new Vec3(-2,0,0));
 
             // Fill the depth buffer with all the faces from all the meshes.
             depthBuffer = [];
