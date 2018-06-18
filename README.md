@@ -20,16 +20,12 @@ More examples (previous versions):
  * [3x3 grid](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-3x3-grid.html)
  * [Faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-faces.html)
 
-## Keys
+## Controls
 
 The widget supports the following keys:
 
  * `W`, `A`, `S`, `D` to move around.
  * `Q`, `E` to go up/down.
- * `Z` shows the vertex ID (If implemented for scene).
- * `X` shows the 2D vertex coordinates (If implemented for scene).
- * `1` animate the cube scale (If implemented for scene).
- * `2` animate the cube rotation (If implemented for scene).
 
  The angle of the camera can be changed with the mouse.
 
