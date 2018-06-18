@@ -29,7 +29,7 @@
     <script>
         // Settings for the rendering.
         var rendering = true, 
-            fps = 30,
+            fps = 60,
             refreshRate = 1000/fps,
             currentFrame = 0,
             fov = Math.min(innerWidth,innerHeight),
@@ -85,7 +85,7 @@
 
             // Create an animated surface with sin(x*x+y*y).
             var t = currentFrame / 16,
-                surfaceSize = 56, 
+                surfaceSize = 32, 
                 surfaceScale = 4, 
                 surface = generateSurfaceMesh(surfaceSize, surfaceSize);
             

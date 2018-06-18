@@ -61,6 +61,9 @@ Console commands to control the rendering.
 
   * `pause()` to halt rendering.
   * `resume()` to resume rendering.
+  * `mouseSensitivity` to change the mouse sensitivity, default is `500`.
+  * `camera.fov` to change the fov, default is `min(innerWidth, innerHeight)`.
+  * `wireframeThickness` to change the wireframe thickness, default is `1`.
 
 ### Modes
 
@@ -96,7 +99,13 @@ A light can be created with `new Light(vec3 pos, vec3 color, brightness)`.
 
 ### Camera
 
-The `Camera` object has a `position`, `rotation`, and a field of fiew `fov`.
+A global object `camera` holds a `Camera` object has a `position`, `rotation`, and a field of fiew `fov`. 
+
+ * `camera.position` is a `vec3` with the position.
+ * `camera.rotation` is a `vec2` with the rotation XY.
+ * `camera.fov` is the field of view.
+
+As an example, use `camera.rotation = camera.rotation.add(new Vec2(0.01,0))` in the main render loop to rotate the camera.
 
 ### Render loop
 
@@ -144,7 +153,7 @@ All the keys that are toggled are stored in `keysToggled`, and any keys that are
 A pointer lock can be requested by adding a click event to the canvas which has a callback to `pointerLockCallback`. To request a pointer lock:
 
   1. Create on click event `bindClick(pointerLockCallback)`.
-  2. Register the mouse `registerMouse()`, which requres a function `mouseCallback`.
+  2. Register the mouse `registerMouse()`, which requires a function `mouseCallback`.
 
 ### Math
 
@@ -188,7 +197,7 @@ The following functions can be used to draw:
  * `rectangle(x,y,w,h)` draws a rectangle.
  * `circle(x,y,r)` draw a circle.
  * `line(x1,y1,x2,y2,thickness)` draws a line.
- * `polygon(points[])` draws a line between the points (`{x:0, y:0}`).
+ * `polygon(points[])` draws a polygon for the provided points (`{x:0, y:0}`).
  * `fillColor(c)` set the fill color.
  * `strokeColor(c)` set the stroke color.
  * `color(c)` set both the fill and stroke color.
