@@ -1,3 +1,20 @@
+// Keep track of which key has been pressed.
+var keys = [];
+for(var i=0; i<255; i++) keys.push(false);
+
+// Handles the movement with the keyboard.
+var keydownCallback = function(e) {
+    if(!keys[e.keyCode]) {
+        if(verbose) console.log("registered key: " + e.keyCode);
+        keys[e.keyCode] = true;
+    }
+}
+
+var keyupCallback = function(e) {
+    if(verbose) console.log("deregistered key: " + e.keyCode);
+    keys[e.keyCode] = false;
+}
+
 var bindKeydown = function(func) {
     document.addEventListener('keydown', func, false);
 }

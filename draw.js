@@ -16,21 +16,20 @@ var offsetX = 0;
 var offsetY = 0;
 
 // Initialize the canvas element.
-var initCanvasContext = function(element) {
+var createGlobalCanvas = function(element) {
     canvas = document.getElementById(element);
     canvas.width = innerWidth;
     canvas.height = innerHeight;
     if(canvas.getContext) {
-        var ctx = canvas.getContext("2d");
+        ctx = canvas.getContext("2d");
         ctx.font = "16px Arial";
         console.log("Canvas context initialized.");
-        return ctx;
     }
     console.log(errorCtxFail);
 }
 
 // Draw on the screen center.
-var center = function() {
+var setCenterScreenOffset = function() {
     offsetX = innerWidth/2;
     offsetY = innerHeight/2;
 }

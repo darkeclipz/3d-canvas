@@ -31,3 +31,8 @@ var rnd = function(value,decimals) {
 var bool2int = function(b) {
     return b ? 1 : 0;
 }
+
+var clip = function(x,a,b) {
+    if (x >= a && x <= b) return true;
+    return false;
+}

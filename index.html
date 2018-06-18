@@ -48,24 +48,6 @@
             if(verbose) console.log(e);
         }
 
-        // Handles the movement with the keyboard.
-        var keydownCallback = function(e) {
-
-            // Determine the correct (x,y) movement (applies camera rotation).
-            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
-                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
-
-            switch(e.keyCode) {
-                case 87: case 38: camera.position.x -= x; camera.position.z += y;     break; // Forward
-                case 83: case 40: camera.position.x += x; camera.position.z -= y;     break; // Backward
-                case 65: case 37: camera.position.x -= y; camera.position.z -= x;     break; // Right
-                case 68: case 39: camera.position.x += y; camera.position.z += x;     break; // Left
-                case 81:          camera.position.y -= cameraMoveSpeed;               break; // Up
-                case 69:          camera.position.y += cameraMoveSpeed;               break; // Down
-                default: if(verbose) console.log("Key pressed: " + e.key + " (" + e.keyCode + ")"); break;
-            }
-        }
-
         // Create two cubes and a floor.
         meshes.push(generateCubeMesh());
         meshes.push(generateCubeMesh());
@@ -80,11 +62,23 @@
         for(var i=0; i < floor.faces.length; i++) {
             floor.faces[i].color = CL_GRAY;
         }
+        floor.faces[floor.faces.length-2].color = "#333";
         floor.vmult(new Vec3(3, 0.02, 3));
         floor.translate(new Vec3(0,3,0));
 
         // Main render loop.
         var render = function() {
+            // Handle keyboard 
+            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
+                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
+
+            if(keys[87] || keys[38]) { camera.position.x -= x; camera.position.z += y; } // Forward
+            if(keys[83] || keys[40]) { camera.position.x += x; camera.position.z -= y; } // Back
+            if(keys[65] || keys[37]) { camera.position.x -= y; camera.position.z -= x; } // Left
+            if(keys[68] || keys[39]) { camera.position.x += y; camera.position.z += x; } // Right
+            if(keys[69])             { camera.position.y -= cameraMoveSpeed; }           // Up
+            if(keys[81])             { camera.position.y += cameraMoveSpeed; }           // Down
+
             // Rotate the cubes as animation. First we need to translate
             // the cube back to the origin (0,0,0), then rotate, and translate
             // back to the position.
@@ -120,9 +114,8 @@
                 // Find all the points in the face and draw a polygon.
                 points = [];
                 for(j=0; j < face.vertices.length; j++) {
-                    v = mesh.vertices[face.vertices[j]];
-                    transformed = transform(v, camera);
-                    points.push({x: transformed.x, y: transformed.y});
+                    v = transform(mesh.vertices[face.vertices[j]], camera);
+                    points.push({x: v.x, y: v.y});
                 }
                 color(face.color);
                 polygon(points);
@@ -151,9 +144,10 @@
         }
 
         // Initialize the canvas and events.
-        ctx = initCanvasContext("render");
-        center(); // (0,0) should be the screen center.
+        createGlobalCanvas("render");
+        setCenterScreenOffset(); // (0,0) should be the screen center.
         bindKeydown(keydownCallback);
+        bindKeyup(keyupCallback);
         bindClick(pointerLockCallback); // Create a pointer lock on click
         bindMouse(mouseCallback); // Mouse movement callback
         render();
