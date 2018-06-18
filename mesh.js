@@ -12,6 +12,11 @@ function Mesh() {
             this.vertices[i] = this.vertices[i].add(new Vec3(v.x, v.y, v.z));
         }
     }
+    this.vmult = function(v) {
+        for(var i=0; i<this.vertices.length; i++) {
+            this.vertices[i] = this.vertices[i].vmult(v);
+        }
+    }
     this.rotateY = function(angle) {
         for(var i=0; i<this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].rotateY(angle);

@@ -65,58 +65,68 @@
             }
         }
 
-        // Add all the meshes.
+        // Create two cubes and a floor.
         meshes.push(generateCubeMesh());
         meshes.push(generateCubeMesh());
+        meshes.push(generateCubeMesh());
+        var cube1 = meshes[0], cube2 = meshes[1], floor = meshes[2];
 
         // Move the cubes.
-        meshes[0].translate(new Vec3(2,0,0));
-        meshes[1].translate(new Vec3(-2,0,0));
+        cube1.translate(new Vec3(2,0,0));
+        cube2.translate(new Vec3(-2,0,0));
+
+        // Create the floor.
+        for(var i=0; i < floor.faces.length; i++) {
+            floor.faces[i].color = CL_GRAY;
+        }
+        floor.vmult(new Vec3(3, 0.02, 3));
+        floor.translate(new Vec3(0,3,0));
 
         // Main render loop.
         var render = function() {
             clear();
-            font("16px " + fontFamily);
 
             // Rotate the cubes as animation. First we need to translate
             // the cube back to the origin (0,0,0), then rotate, and translate
             // back to the position.
-            meshes[0].translate(new Vec3(-2,0,0));
-            meshes[1].translate(new Vec3(2,0,0));
-            meshes[0].rotateY(1/(8*Math.PI));
-            meshes[1].rotateY(-1/(16*Math.PI));
-            meshes[0].translate(new Vec3(2,0,0));
-            meshes[1].translate(new Vec3(-2,0,0));
+            cube1.translate(new Vec3(-2,0,0));
+            cube2.translate(new Vec3(2,0,0));
+            cube1.rotateY(1/(8*Math.PI));
+            cube2.rotateY(-1/(16*Math.PI));
+            cube1.translate(new Vec3(2,0,0));
+            cube2.translate(new Vec3(-2,0,0));
 
-            // Draw all the meshes.
+            // Fill the depth buffer with all the faces from all the meshes.
+            depthBuffer = [];
             for(var i=0; i < meshes.length; i++) {
                 mesh = meshes[i];
-
                 // Calculate the distance of a face to the camera, and add it to a depth buffer.
-                depthBuffer = [];
                 for(var j=0; j < mesh.faces.length; j++) {
+                    // Find the vertex in the center of the face and calculate the distance
+                    // of this vertex to the camera.
                     distance = camera.position.distance(mesh.faces[j].average(mesh.vertices));
-                    depthBuffer.push({'face': j, 'distance': distance});
-                }
-
-                // Sort the depth buffer on distance, we want to draw the furthest face first.
-                depthBuffer.sort(function(a, b) { return b.distance - a.distance});
-
-                // Draw each face in the depth buffer.
-                for(var j=0; j < depthBuffer.length; j++) {
-                    index = depthBuffer[j].face;
-                    face = mesh.faces[index];
-                    points = [];
-                    for(k=0; k < face.vertices.length; k++) {
-                        v = mesh.vertices[face.vertices[k]];
-                        transformed = transform(v, camera);
-                        points.push({'x': transformed.x, 'y': transformed.y});
-                    }
-                    color(face.color);
-                    polygon(points);
+                    depthBuffer.push({mesh: i, face: j, distance: distance});
                 }
             }
 
+            // Sort the depth buffer on distance, we want to draw the furthest face first.
+            depthBuffer.sort(function(a, b) { return b.distance - a.distance });
+
+            // Draw all the faces in the depth buffer.
+            for(var i=0; i < depthBuffer.length; i++) {
+                mesh = meshes[depthBuffer[i].mesh];
+                face = mesh.faces[depthBuffer[i].face];
+                // Find all the points in the face and draw a polygon.
+                points = [];
+                for(j=0; j < face.vertices.length; j++) {
+                    v = mesh.vertices[face.vertices[j]];
+                    transformed = transform(v, camera);
+                    points.push({x: transformed.x, y: transformed.y});
+                }
+                color(face.color);
+                polygon(points);
+            }
+            
             // Post-render
             font("16px " + fontFamily);
             color(CL_WHITE);
@@ -133,12 +143,12 @@
         }
 
         // Initialize the canvas and events.
-        canvas = document.getElementById("render");
+        canvas = document.getElementById("render"); // is required globally by control.js
         ctx = initCanvasContext("render");
         center(); // (0,0) should be the screen center.
         bindKeydown(keydownCallback);
-        bindClick(pointerLockCallback);
-        bindPointer(mouseCallback);
+        bindClick(pointerLockCallback); // Create a pointer lock on click
+        bindMouse(mouseCallback); // Mouse movement callback
         render();
     </script>
 </html>

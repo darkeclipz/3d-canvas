@@ -9,6 +9,9 @@ function Vec3(x,y,z) {
     this.add = function(v) {
         return new Vec3(this.x+v.x, this.y+v.y, this.z+v.z);
     }
+    this.vmult = function(v) {
+        return new Vec3(this.x*v.x, this.y*v.y, this.z*v.z);
+    }
     this.scale = function(scalar) {
         return new Vec3(scalar*this.x, scalar*this.y, scalar*this.z);
     }

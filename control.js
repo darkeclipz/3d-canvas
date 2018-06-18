@@ -4,7 +4,7 @@ var bindKeydown = function(func) {
 var bindKeyup = function(func) {
     document.addEventListener('keyup', func, false);
 }
-var bindPointer = function(func) {
+var bindMouse = function(func) {
     document.addEventListener('pointerlockchange', func, false);
     document.addEventListener('mozpointerlockchange', func, false);
     document.addEventListener('webkitpointerlockchange', func, false);  
@@ -34,7 +34,6 @@ var pointerLockCallback = function pointerLock() {
             if(verbose) console.log("locked");
         } 
         else {
-
             if(verbose) console.log("not locked");
         }
     }
