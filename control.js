@@ -23,6 +23,7 @@ for(var i=0; i<255; i++) { keysDown.push(false); keysToggled.push(false); }
 
 // Handles the movement with the keyboard.
 var keydownCallback = function(e) {
+    if(e.keyCode >= 255) return;
     if(!keysDown[e.keyCode]) {
         if(verbose) console.log("registered key: " + e.keyCode);
         keysDown[e.keyCode] = true;

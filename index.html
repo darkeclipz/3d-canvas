@@ -13,12 +13,18 @@
     </body>
     <script src="draw.js"></script>
     <script src="control.js"></script>
+    <script>
+        // Quickly toggle UI settings.
+        var toggleFaces         = function() { keysToggled[KEY_Z] = !keysToggled[KEY_Z]; };
+        var toggleWireframe     = function() { keysToggled[KEY_X] = !keysToggled[KEY_X]; };
+        var toggleCoordinates   = function() { keysToggled[KEY_C] = !keysToggled[KEY_C]; };
+        var toggleVertices      = function() { keysToggled[KEY_V] = !keysToggled[KEY_V]; };        
+    </script>
     <script src="math.js"></script>
     <script src="vec.js"></script>
     <script src="camera.js"></script>
     <script src="mesh.js"></script>
     <script>
-
         // Settings for the rendering.
         var rendering = true, 
             fps = 30,
@@ -26,7 +32,7 @@
             currentFrame = 0,
             fov = Math.min(innerWidth,innerHeight),
             camera = new Camera(fov),
-            verbose = true, // Debug console output.
+            verbose = false, // Debug console output.
             cameraMoveSpeed = 0.1,
             mouseSensitivity = 500,
             fontFamily = "Orbitron",
@@ -36,11 +42,16 @@
             clipMargin = 250,
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
 
+        // Pre-render initialization
         camera.position = new Vec3(-5.2, -2.8, -5.23);
         camera.rotation = new Vec2(-0.81, -0.4);
-        keysToggled[KEY_Z] = true; // Enable faces.
+        toggleFaces();
+        toggleVertices();
 
-        meshes.push(generateCubeMesh());
+        // Add meshes
+        var surfaceSize = 50, surfaceScale = 5, surface = generateSurfaceMesh(surfaceSize, surfaceSize);
+        surface.vmult(new Vec3(surfaceScale,1,surfaceScale));
+        meshes.push(surface);
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -69,9 +80,6 @@
             if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
             if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
-
-            // Rotate cube
-            meshes[0].rotateY(0.01);
 
             // Fill the depth buffer with all the faces from all the meshes.
             depthBuffer = [];
@@ -196,5 +204,6 @@
         // Usefull as commands.
         var pause = function() { rendering = false; }
         var resume = function() { rendering = true; render(); }
+        console.log("Toggle the renderer with 'pause()', and 'resume()'.");
     </script>
 </html>
