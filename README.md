@@ -74,9 +74,9 @@ To toggle rendering modes. Called before the main render loop.
 
 ### Meshes
 
-A mesh holds all the vertices, edges, and faces. More importantly, it enables us to perform maths on an entire mesh (all the vertices at once).
+A mesh holds all the vertices, edges, and faces. More importantly, it enables us to apply transformation on an entire mesh (all the vertices at once).
 
-  * `meshes` holds all the meshes that are rendered, `push` a `Mesh` to render it.
+  * A global variable `meshes` holds all the meshes that are rendered, `push` a `Mesh` to render it.
     * A mesh has `vertices`, `edges`, and `faces`.
     * A mesh supports the following operations: `scale(scalar)`, `translate(vec3)`, `vmult(vec3)`, `rotateY(angle)`, `applyToY(f(x,y))`, `faceColor(c)`.
     * A face supports the following operations: `center(mesh.vertices)`.
@@ -84,13 +84,15 @@ A mesh holds all the vertices, edges, and faces. More importantly, it enables us
 
 A cube mesh can be created with `generateCubeMesh`, and a surface with `generateSurfaceMesh(width,height)`.
 
-It is possible to create a `MeshGroup` and add meshes to `meshes`. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateY`.
+It is possible to create a `MeshGroup` and add meshes to it. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateY`. However, the mesh still need to be pushed into the global `meshes` list. It is simply a reference.
 
 ### Lights
 
-List that holds all the lights that are rendered in the scene. The distance from a face to the light will be calculated. The color from the face is mixed with the color from the light. It requires `toggleLightning()` to render.
+A global variable `lights` holds all the lights that are rendered in the scene. The distance from a face to the light will be calculated. The color from the face is mixed with the color from the light. It requires `toggleLightning()` to render.
 
   * `lights` holds all the lights in the scene, `push` a `Light` to render it.
+
+A light can be create with `new Light(vec3 pos, vec3 color, brightness)`.
 
 ### Render loop
 
@@ -111,7 +113,7 @@ The main rendering algorithm is:
 4. Fill a depth buffer with the distance from a face to the camera.
 5. Sort the depth buffer.
 6. Draw the faces (furthest first).
-7. Transform and clip coordinates.
+    * Transform and clip coordinates.
     * Find the distance from the face to the light source.
     * Mix the color from the face and the light source based on the distance.
 8. Draw the wireframe.
