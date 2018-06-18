@@ -47,7 +47,14 @@ var rbound = function(x,a,b) {
     return x;
 }
 
-// Return the array index of an element in a grid.
+// Return the index of an element in a grid.
 function index(x, y, width) { 
     return width * y + x; 
+}
+
+// Mix two vectors.
+function mix(v,u,alpha) {
+    return new Vec3( (1-alpha) * v.x + alpha * u.x, 
+                     (1-alpha) * v.y + alpha * u.y, 
+                     (1-alpha) * v.z + alpha * u.z);
 }

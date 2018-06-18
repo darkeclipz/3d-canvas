@@ -28,6 +28,11 @@ function Mesh() {
             this.vertices[i] = new Vec3(v.x, f(v.x, v.z), v.z);
         }
     }
+    this.faceColor = function(c) {
+        for(var i=0; i<this.faces.length; i++) {
+            this.faces[i].color = c;
+        }
+    }
 }
 
 function MeshGroup() {

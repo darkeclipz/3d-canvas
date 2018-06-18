@@ -27,6 +27,7 @@ More examples (previous versions):
  * [Surface mesh](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh.html)
  * [Multivariable functions](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-multivariable-functions.html)
  * [Surface mesh edges + faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh-faces.html)
+ * [Light](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-light.html)
 
 ## Controls
 
