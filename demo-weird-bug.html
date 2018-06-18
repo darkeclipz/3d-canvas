@@ -35,8 +35,8 @@
             clipMargin = 250,
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
 
-        camera.position = new Vec3(-25.35, -6.7, -0.19);
-        camera.rotation = new Vec2(-1.58, -0.53);
+        camera.position = new Vec3(-5.56, -2.1, -8.51);
+        camera.rotation = new Vec2(-0.61, -0.52);
         keysToggled[KEY_V] = true; // Enable vertices.
 
         // Handles movement with the mouse.
@@ -50,9 +50,9 @@
         }
 
         // Create a surface mesh.
-        var surfaceSize = 175;
+        var surfaceSize = 64;
         surface = generateSurfaceMesh(surfaceSize, surfaceSize);
-        var surfaceScale = 20;
+        var surfaceScale = 5;
         surface.vmult(new Vec3(surfaceScale,0,surfaceScale));
         surface.translate(new Vec3(0,2,0));
         meshes.push(surface);
@@ -121,7 +121,7 @@
                         }
                     }
                     // Only draw if we can create atleast a line.
-                    if(points.length >= 2) {
+                    if(points.length > 2) {
                         color(face.color);
                         polygon(points);
                     }
@@ -145,7 +145,6 @@
             }
             
             // Draw the vertices/coordinates over the faces and wireframe.
-            var uiCoordinatesTooMany = "";
             if(displayVertices || displayCoordinates) {
                 color(CL_WHITE);
                 if(displayCoordinates){
@@ -155,14 +154,10 @@
                     for(var j=0; j<meshes[i].vertices.length; j++) {
                         v = transform(meshes[i].vertices[j], camera);
                         if(displayVertices) {
-                            rectangle(v.x, v.y, 1, 1); // Drawing rectangles is way faster!
+                            rectangle(v.x, v.y, v.x+1, v.y+1);
                         }
-                        var tooManyVerticeCoordinates = meshes[i].vertices.length > 64;
-                        if(displayCoordinates && !tooManyVerticeCoordinates) {
+                        if(displayCoordinates) {
                             text(v.x + 5, v.y + 6, meshes[i].vertices[j].toString());
-                        }
-                        if(tooManyVerticeCoordinates) {
-                            uiCoordinatesTooMany = "[Too many coordinates to draw!]";
                         }
                     }
                 }
@@ -187,11 +182,6 @@
                 font("22px " + fontFamily);
                 uitext(innerWidth/2-120, 150, "(No touch support)");
             }
-            if(displayCoordinates && uiCoordinatesTooMany) {
-                color(CL_RED);
-                font("12px " + fontFamily);
-                uitext(280, 144, uiCoordinatesTooMany);
-            }
             
             currentFrame++;
             if(rendering) {
@@ -207,9 +197,5 @@
         bindClick(pointerLockCallback); // Create a pointer lock on click
         bindMouse(mouseCallback); // Mouse movement callback
         render();
-
-        // Usefull as commands.
-        var pause = function() { rendering = false; }
-        var resume = function() { rendering = true; render(); }
     </script>
 </html>

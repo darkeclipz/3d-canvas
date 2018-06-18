@@ -34,3 +34,8 @@ var clip = function(x,a,b) {
 var bool2int = function(b) {
     return b ? 1 : 0;
 }
+
+// Interpolate on an interval.
+var interpolate = function(a,b,alpha) {
+    return a + (b - a) * alpha;
+}

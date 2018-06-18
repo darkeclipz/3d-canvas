@@ -99,3 +99,13 @@ function generateCubeMesh() {
     mesh.faces.push(new Face([0,1,5,4], 'grey'));
     return mesh;
 }
+
+function generateSurfaceMesh(w,h) {
+    var mesh = new Mesh();
+    for(var x=0; x<w; x++) {
+        for(var y=0; y<h; y++) {
+            mesh.vertices.push(new Vec3(interpolate(-1,1,x/w), 0, interpolate(-1,1,y/h)));
+        }
+    }
+    return mesh;
+}

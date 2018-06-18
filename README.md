@@ -23,6 +23,8 @@ More examples (previous versions):
  * [Wireframe](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-wireframe.html)
  * [Cube surface](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-cube-surface.html)
  * [Clipping (removes weird artifacts)](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-clipping.html)
+ * [Weird bug](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-weird-bug.html)
+ * [Surface mesh](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh.html)
 
 ## Controls
 
