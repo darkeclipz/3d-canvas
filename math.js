@@ -24,7 +24,13 @@ var rnd = function(value,decimals) {
     return Math.round(value*factor)/factor;
 }
 
+// Returns true if the value is within bounds, false otherwise.
 var clip = function(x,a,b) {
     if(x >= a && x <= b) return true;
     return false;
+}
+
+// Still used in the first demo.
+var bool2int = function(b) {
+    return b ? 1 : 0;
 }
