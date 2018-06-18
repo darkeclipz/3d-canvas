@@ -25,6 +25,7 @@ More examples (previous versions):
  * [Clipping (removes weird artifacts)](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-clipping.html)
  * [Weird bug](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-weird-bug.html)
  * [Surface mesh](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh.html)
+ * [Multivariable functions](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-multivariable-functions.html)
 
 ## Controls
 

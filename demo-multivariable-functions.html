@@ -13,6 +13,19 @@
     </body>
     <script src="draw.js"></script>
     <script src="control.js"></script>
+    <script>
+        // Override keydown callback.
+        var keydownCallback = function(e) {
+            if(!keysDown[e.keyCode]) {
+                if(verbose) console.log("registered key: " + e.keyCode);
+                keysDown[e.keyCode] = true;
+                keysToggled[e.keyCode] = !keysToggled[e.keyCode];
+                if(e.keyCode == KEY_SPACE) functionSelector = (functionSelector + 1) % (functions.length); 
+                return; 
+            }
+        }
+    </script>
+
     <script src="math.js"></script>
     <script src="vec.js"></script>
     <script src="camera.js"></script>
@@ -34,13 +47,12 @@
             meshes = [],
             mouseLocked = false,
             clipMargin = 250,
-            clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
+            clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
+            surfaceScaleY = 0.25;
 
         camera.position = new Vec3(-5.2, -2.8, -5.23);
         camera.rotation = new Vec2(-0.81, -0.4);
-        keysToggled[KEY_Z] = true; // Enable faces.
-
-        meshes.push(generateCubeMesh());
+        keysToggled[KEY_V] = true; // Enable vertices.
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -51,8 +63,26 @@
             camera.rotation.x -= movementX / mouseSensitivity;
             camera.rotation.y -= movementY / mouseSensitivity;
         }      
+        
+        // Multivariable functions, f(x,y).
+        var functionSelector = 0;
+        var fourierSquareWave = function(x) {
+            return Math.PI/4 + Math.sin(x) + Math.sin(3*x)/3 + Math.sin(5*x)/5 + Math.sin(7*x)/7;
+        }
+        var functions = [
+            { f: function(x,y) { return Math.sin(x*x + y*y); }, equation: "sin(x^2 + y^2)"},
+            { f: function(x,y) { return x * y; }, equation: "x * y" },
+            { f: function(x,y) { return Math.sin(x) + Math.cos(y); }, equation: "sin(x) + cos(y)" },
+            { f: function(x,y) { return x*x-y*y; }, equation: "x^2 - y^2" },
+            { f: function(x,y) { return x/5-y/4; }, equation: "x/5 - y/4"},
+            { f: function(x,y) { return -1*Math.sqrt(x*x+y*y)}, equation: "-1*sqrt(x^2 + y^2)"},
+            { f: function(x,y) { return fourierSquareWave(2*x) + fourierSquareWave(2*y); }, equation: "Fourier square wave"},
+            { f: function(x,y) { return 1/x + 1/y; }, equation: "1/x + 1/y"},
+            { f: function(x,y) { return 2*x*x + 2*y*y - 4; }, equation: "2x^2 + 2y^2 - 4"}
+        ];
 
         // Main render loop.
+        var once = false;
         var render = function() {
             // Handle keyboard 
             var displayFaces        = keysToggled[KEY_Z],
@@ -69,9 +99,19 @@
             if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
             if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
+            if(keysDown[KEY_R])                         { surfaceScaleY += 0.01; }
+            if(keysDown[KEY_F])                         { surfaceScaleY -= 0.01; }
 
-            // Rotate cube
-            meshes[0].rotateY(0.01);
+            // Create surface mesh.
+            meshes = [];
+            surfaceSize = 75;
+            surfaceScale = 3;
+            surface = generateSurfaceMesh(surfaceSize, surfaceSize);
+            surface.vmult(new Vec3(surfaceScale,0,surfaceScale));
+            surface.translate(new Vec3(0,2,0));
+            meshes.push(surface);
+            surface.applyToY(functions[functionSelector].f);
+            surface.vmult(new Vec3(1, surfaceScaleY, 1));
 
             // Fill the depth buffer with all the faces from all the meshes.
             depthBuffer = [];
@@ -164,6 +204,14 @@
             uitext(10,145,"Toggle coordinates (C): " + displayCoordinates);
             uitext(10,165,"Toggle vertices (V): " + displayVertices);
             uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
+
+            
+            uitext(10,300, "Formulas (scale: " + rnd(surfaceScaleY,2) + ", change with R/F):");
+            font("18px " + fontFamilyMath);
+            for(var i=0; i<functions.length; i++) {
+                f = functions[i];
+                uitext(25,330+25*i, f.equation + (i==functionSelector ? " [Selected (switch with space)]" : ""));
+            }
 
             if(!mouseLocked) {
                 color(CL_GRAY);

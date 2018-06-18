@@ -22,6 +22,12 @@ function Mesh() {
             this.vertices[i] = this.vertices[i].rotateY(angle);
         }
     }
+    this.applyToY = function(f) {
+        for(var i=0; i<this.vertices.length; i++) {
+            v = this.vertices[i];
+            this.vertices[i] = new Vec3(v.x, f(v.x, v.z), v.z);
+        }
+    }
 }
 
 function MeshGroup() {
