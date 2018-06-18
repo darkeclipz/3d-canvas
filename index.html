@@ -47,8 +47,8 @@
             lights = [];
 
         // Pre-render initialization
-        camera.position = new Vec3(-5.2, -2.8, -5.23);
-        camera.rotation = new Vec2(-0.81, -0.4);
+        camera.position = new Vec3(-0.45, -2.1, -4.19);
+        camera.rotation = new Vec2(-0.37, -0.42);
         toggleFaces();
 
         // Add lights
@@ -84,15 +84,14 @@
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
 
             // Create an animated surface with sin(x*x+y*y).
-            var t = currentFrame / 16;
-
-            var surfaceSize = 56, 
-                surfaceScale = 12, 
+            var t = currentFrame / 16,
+                surfaceSize = 56, 
+                surfaceScale = 4, 
                 surface = generateSurfaceMesh(surfaceSize, surfaceSize);
             
             // Move, scale, and apply f.
             surface.vmult(new Vec3(surfaceScale,1,surfaceScale));
-            surface.applyToY(function(x,y) { return 1/8*Math.sin(x*x + y*y + t); });
+            surface.applyToY(function(x,y) { return 1/4*Math.sin(x*x + y*y + t); });
             surface.translate(new Vec3(surfaceScale/2,0,surfaceScale/2))
 
             // Fade over some colors.
