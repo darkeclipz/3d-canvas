@@ -124,7 +124,7 @@
                 // Calculate the distance of a face to the camera, and add it to a depth buffer.
                 depthBuffer = [];
                 for(var j=0; j < mesh.faces.length; j++) {
-                    distance = camera.position.distance(mesh.faces[j].average(mesh.vertices));
+                    distance = camera.position.distance(mesh.faces[j].center(mesh.vertices));
                     depthBuffer.push({'face': j, 'distance': distance});
                 }
 
@@ -161,11 +161,11 @@
         }
 
         // Initialize the canvas and events.
-        ctx = initCanvasContext("render");
+        createGlobalCanvas("render");
+        setCenterScreenOffset(); // (0,0) should be the screen center.
         ctx.lineWidth = 2;
-        center(); // (0,0) should be the screen center.
         bindKeydown(handleKeys);
-        bindPointer(handlePointer);
+        bindMouse(handlePointer);
         render();
     </script>
 </html>

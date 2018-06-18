@@ -140,11 +140,11 @@
         }
 
         // Initialize the canvas and events.
-        ctx = initCanvasContext("render");
+        createGlobalCanvas("render");
+        setCenterScreenOffset(); // (0,0) should be the screen center.
         ctx.lineWidth = 2;
-        center(); // (0,0) should be the screen center.
         bindKeydown(handleKeys);
-        bindPointer(handlePointer);
+        bindMouse(handlePointer);
         render();
     </script>
 </html>
