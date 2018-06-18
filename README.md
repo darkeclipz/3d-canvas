@@ -160,6 +160,21 @@ The following math functions are defined:
  * `index(x,y,width)` returns the index in a list for an item in a x*y grid with width w.
  * `mix(vec3, vec3, alpha)` mix two vectors, useful for mixing colors.
 
+### Vec3
+
+The `Vec3` object provides quick access to vector maths. The following functions are implemented:
+
+ * `toString()` outputs `(x,y,z)`.
+ * `add(vec3)` or `add(scalar)` vector addition.
+ * `vmult(vec)` vector-vector multiplication.
+ * `scale(scalar)` vector-scalar multiplication.
+ * `rotateY(angle)` rotate around the Y-axis.
+ * `dot(vec3)` dot product between two vectors.
+ * `length()` length of the vector.
+ * `distance(v)` distance between this vector and `v`.
+ * `toRgb()` returns `rgb(x,y,z)`.
+ * `apply(f)` apply a function f to (f(x), f(y), f(z)).
+
 ### Draw
 
 This are functions for drawing on the canvas. To initialize a new canvas:
