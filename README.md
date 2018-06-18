@@ -92,7 +92,11 @@ A global variable `lights` holds all the lights that are rendered in the scene. 
 
   * `lights` holds all the lights in the scene, `push` a `Light` to render it.
 
-A light can be create with `new Light(vec3 pos, vec3 color, brightness)`.
+A light can be created with `new Light(vec3 pos, vec3 color, brightness)`.
+
+### Camera
+
+The `Camera` object has a `position`, `rotation`, and a field of fiew `fov`.
 
 ### Render loop
 
@@ -107,9 +111,9 @@ Initializing the renderer goes like:
 
 The main rendering algorithm is:
 
-1. Handle keys
-2. Apply movement
-3. Animate meshes
+1. Handle keys.
+2. Apply movement.
+3. Animate meshes.
 4. Fill a depth buffer with the distance from a face to the camera.
 5. Sort the depth buffer.
 6. Draw the faces (furthest first).
@@ -125,6 +129,36 @@ The main rendering algorithm is:
 11. Set timeout for next pass.
 
  It also handles a `mouseCallback` for mouse movement.
+
+### Controls
+
+Holds all the functionality for keyboard and mouse events. Register events with:
+
+ * `bindKeydown(callback)`
+ * `bindKeyup(callback)`
+ * `bindMouse(callback)`
+ * `bindClick(callback)`
+
+All the keys that are toggled are stored in `keysToggled`, and any keys that are pressed at this moment are in `keysDown`. It is a list with `e.keyCode` as index.
+ 
+A pointer lock can be requested by adding a click event to the canvas which has a callback to `pointerLockCallback`. To request a pointer lock:
+
+  1. Create on click event `bindClick(pointerLockCallback)`.
+  2. Register the mouse `registerMouse()`, which requres a function `mouseCallback`.
+
+### Math
+
+The following math functions are defined:
+
+ * `transform(vec3, camera)` transform a 3D coordinate to a 2D coordinate.
+ * `rotate2d(vec2, angle)` rotate a 2D vector.
+ * `rnd(value, decimal)` round a number, with decimal places.
+ * `clip(x,a,b)` returns `true` if x is a < x < b, else `false`.
+ * `bool2int(b)` convert a Boolean value to `0` or `1`.
+ * `interpolate(a,b,alpha)` interpolate between two values.
+ * `rbound(x,a,b)` keep a value between [a,b]. 
+ * `index(x,y,width)` returns the index in a list for an item in a x*y grid with width w.
+ * `mix(vec3, vec3, alpha)` mix two vectors, useful for mixing colors.
 
 ## License
 
