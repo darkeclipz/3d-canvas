@@ -7,6 +7,7 @@ const CL_GREEN  = "#00ff00";
 const CL_GRAY   = "#888888";
 
 // Variables.
+var canvas;
 var ctx;
 var errorCtxNotDefined = "Canvas context not defined, have you called 'initCanvasContext(element)'?";
 var errorCtxFail = "Failed to get context.";
@@ -16,7 +17,7 @@ var offsetY = 0;
 
 // Initialize the canvas element.
 var initCanvasContext = function(element) {
-    var canvas = document.getElementById(element);
+    canvas = document.getElementById(element);
     canvas.width = innerWidth;
     canvas.height = innerHeight;
     if(canvas.getContext) {
