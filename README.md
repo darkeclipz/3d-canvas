@@ -105,22 +105,22 @@ Initializing the renderer goes like:
 
 The main rendering algorithm is:
 
- 1. Handle keys
- 2. Apply movement
- 3. Animate meshes
- 4. Fill a depth buffer with the distance from a face to the camera.
- 5. Sort the depth buffer.
- 6. Draw the faces (furthest first).
-   0. Transform and clip coordinates.
-   1. Find the distance from the face to the light source.
-   2. Mix the color from the face and the light source based on the distance.
- 7. Draw the wireframe.
-   0. Transform and clip coordinates.
- 8. Draw the vertices.
-   0. Transform and clip coordinates.
-   1. Draw the UI with coordinates.
- 9. Draw UI text.
- 10. Set timeout for next pass.
+1. Handle keys
+2. Apply movement
+3. Animate meshes
+4. Fill a depth buffer with the distance from a face to the camera.
+5. Sort the depth buffer.
+6. Draw the faces (furthest first).
+0. Transform and clip coordinates.
+  1. Find the distance from the face to the light source.
+  2. Mix the color from the face and the light source based on the distance.
+7. Draw the wireframe.
+  0. Transform and clip coordinates.
+8. Draw the vertices.
+  0. Transform and clip coordinates.
+  1. Draw the UI with coordinates.
+9. Draw UI text.
+10. Set timeout for next pass.
 
  It also handles a `mouseCallback` for mouse movement.
 
