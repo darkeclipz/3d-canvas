@@ -1,18 +1,36 @@
+// Most used keys
+const KEY_W = 87;
+const KEY_A = 65;
+const KEY_S = 83;
+const KEY_D = 68;
+const KEY_UP = 38;
+const KEY_LEFT = 37;
+const KEY_DOWN = 40;
+const KEY_RIGHT = 39;
+const KEY_Q = 81;
+const KEY_E = 69;
+const KEY_Z = 90;
+const KEY_X = 88;
+const KEY_C = 67;
+const KEY_V = 86;
+
 // Keep track of which key has been pressed.
-var keys = [];
-for(var i=0; i<255; i++) keys.push(false);
+var keysDown = [], keysToggled = [];
+for(var i=0; i<255; i++) { keysDown.push(false); keysToggled.push(false); }
 
 // Handles the movement with the keyboard.
 var keydownCallback = function(e) {
-    if(!keys[e.keyCode]) {
+    if(!keysDown[e.keyCode]) {
         if(verbose) console.log("registered key: " + e.keyCode);
-        keys[e.keyCode] = true;
+        keysDown[e.keyCode] = true;
+        keysToggled[e.keyCode] = !keysToggled[e.keyCode];
+        return; 
     }
 }
 
 var keyupCallback = function(e) {
     if(verbose) console.log("deregistered key: " + e.keyCode);
-    keys[e.keyCode] = false;
+    keysDown[e.keyCode] = false;
 }
 
 var bindKeydown = function(func) {

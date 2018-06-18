@@ -26,16 +26,14 @@
             currentFrame = 0,
             fov = Math.min(innerWidth,innerHeight),
             camera = new Camera(fov),
-            verbose = false,
+            verbose = false, // Debug console output.
             cameraMoveSpeed = 0.1,
             mouseSensitivity = 500,
             fontFamily = "Orbitron",
             meshes = [],
             mouseLocked = false;
 
-        // Set an initial position for the camera.
-        //camera.position = new Vec3(-5.91, -4.1, -7.84);
-        //camera.rotation = new Vec2(-0.62, -0.43);
+        keysToggled[KEY_Z] = true; // Enable display faces.
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -45,18 +43,19 @@
             var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
             camera.rotation.x -= movementX / mouseSensitivity;
             camera.rotation.y -= movementY / mouseSensitivity;
-            if(verbose) console.log(e);
         }
 
         // Create two cubes and a floor.
         meshes.push(generateCubeMesh());
         meshes.push(generateCubeMesh());
         meshes.push(generateCubeMesh());
-        var cube1 = meshes[0], cube2 = meshes[1], floor = meshes[2];
+        meshes.push(generateCubeMesh());
+        var cube1 = meshes[0], cube2 = meshes[1], floor = meshes[2], cube3 = meshes[3];
 
         // Move the cubes.
         cube1.translate(new Vec3(2,0,0));
         cube2.translate(new Vec3(-2,0,0));
+        cube3.translate(new Vec3(10,0,0))
 
         // Create the floor.
         for(var i=0; i < floor.faces.length; i++) {
@@ -69,15 +68,20 @@
         // Main render loop.
         var render = function() {
             // Handle keyboard 
+            var displayFaces        = keysToggled[KEY_Z],
+                displayWireframe    = keysToggled[KEY_X],
+                displayCoordinates  = keysToggled[KEY_C],
+                displayVertices     = keysToggled[KEY_V];
+
             var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
                 y = cameraMoveSpeed * Math.cos(camera.rotation.x);
 
-            if(keys[87] || keys[38]) { camera.position.x -= x; camera.position.z += y; } // Forward
-            if(keys[83] || keys[40]) { camera.position.x += x; camera.position.z -= y; } // Back
-            if(keys[65] || keys[37]) { camera.position.x -= y; camera.position.z -= x; } // Left
-            if(keys[68] || keys[39]) { camera.position.x += y; camera.position.z += x; } // Right
-            if(keys[69])             { camera.position.y -= cameraMoveSpeed; }           // Up
-            if(keys[81])             { camera.position.y += cameraMoveSpeed; }           // Down
+            if(keysDown[KEY_W] || keysDown[KEY_UP])     { camera.position.x -= x; camera.position.z += y; } // Forward
+            if(keysDown[KEY_S] || keysDown[KEY_DOWN])   { camera.position.x += x; camera.position.z -= y; } // Back
+            if(keysDown[KEY_A] || keysDown[KEY_LEFT])   { camera.position.x -= y; camera.position.z -= x; } // Left
+            if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
+            if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
+            if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
 
             // Rotate the cubes as animation. First we need to translate
             // the cube back to the origin (0,0,0), then rotate, and translate
@@ -108,19 +112,52 @@
             clear(); // Clear the screen for redrawing.
 
             // Draw all the faces in the depth buffer.
-            for(var i=0; i < depthBuffer.length; i++) {
-                mesh = meshes[depthBuffer[i].mesh];
-                face = mesh.faces[depthBuffer[i].face];
-                // Find all the points in the face and draw a polygon.
-                points = [];
-                for(j=0; j < face.vertices.length; j++) {
-                    v = transform(mesh.vertices[face.vertices[j]], camera);
-                    points.push({x: v.x, y: v.y});
+            if(displayFaces) {
+                for(var i=0; i < depthBuffer.length; i++) {
+                    mesh = meshes[depthBuffer[i].mesh];
+                    face = mesh.faces[depthBuffer[i].face];
+                    // Find all the points in the face and draw a polygon.
+                    points = [];
+                    for(j=0; j < face.vertices.length; j++) {
+                        v = transform(mesh.vertices[face.vertices[j]], camera);
+                        points.push({x: v.x, y: v.y});
+                    }
+                    color(face.color);
+                    polygon(points);
                 }
-                color(face.color);
-                polygon(points);
+            }
+
+            // Draw a wireframe over the faces.
+            if(displayWireframe) {
+                color(CL_WHITE);
+                for(var i=0; i<meshes.length; i++) {
+                    for(var j=0; j<meshes[i].edges.length; j++) {
+                        var a = transform(meshes[i].vertices[meshes[i].edges[j].a], camera),
+                            b = transform(meshes[i].vertices[meshes[i].edges[j].b], camera);
+                        line(a.x,a.y,b.x,b.y, 3);
+                    }
+                }
             }
             
+            // Draw the vertices/coordinates over the faces and wireframe.
+            if(displayVertices || displayCoordinates) {
+                color(CL_WHITE);
+                if(displayCoordinates){
+                    font("16px " + fontFamily);
+                }
+                for(var i=0; i<meshes.length; i++) {
+                    for(var j=0; j<meshes[i].vertices.length; j++) {
+                        v = transform(meshes[i].vertices[j], camera);
+                        if(displayVertices) {
+                            circle(v.x, v.y, 3);
+                        }
+                        if(displayCoordinates) {
+                            text(v.x + 5, v.y + 6, meshes[i].vertices[j].toString());
+                        }
+                    }
+                }
+            }
+        
             // Post-render
             font("16px " + fontFamily);
             color(CL_WHITE);
@@ -128,6 +165,10 @@
             uitext(10,45,"Current frame: " + currentFrame);
             uitext(10,65,"Camera position: " + camera.position.toString());
             uitext(10,85,"Camera rotation: " + camera.rotation.toString());
+            uitext(10,105,"Toggle faces (Z): " + displayFaces);
+            uitext(10,125,"Toggle wireframe (X): " + displayWireframe);
+            uitext(10,145,"Toggle coordinates (C): " + displayCoordinates);
+            uitext(10,165,"Toggle vertices (V): " + displayVertices);
             uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
             if(!mouseLocked) {
                 color(CL_GRAY);
@@ -136,7 +177,7 @@
                 font("22px " + fontFamily);
                 uitext(innerWidth/2-120, 150, "(No touch support)");
             }
-
+            
             currentFrame++;
             if(rendering) {
                 setTimeout(render, refreshRate);
