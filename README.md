@@ -22,6 +22,7 @@ More examples (previous versions):
  * [Depth buffer + controls](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-depth-buffer.html)
  * [Wireframe](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-wireframe.html)
  * [Cube surface](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-cube-surface.html)
+ * [Clipping (removes weird artifacts)](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-clipping.html)
 
 ## Controls
 
@@ -41,7 +42,8 @@ The widget supports the following keys:
  Things that can be improved:
 
   * Implement forward/backward: Add a ray class, and find the angle between the camera, and the object we are looking at. If the angle is within bounds, the object is visible and in front of us. Otherwise, the object is on the sides, or back, and we do not want to draw it.
- * The Y-axis is upside down, so the entire coordinate system is upside down.
+  * The Y-axis is upside down, so the entire coordinate system is upside down.
+  * Implement a better clipping algorithm. A mesh should not be displayed if _all of the points_ are outside of bounds.
 
 ## License
 
