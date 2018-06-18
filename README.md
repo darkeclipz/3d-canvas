@@ -64,6 +64,7 @@ Console commands to control the rendering.
   * `mouseSensitivity` to change the mouse sensitivity, default is `500`.
   * `camera.fov` to change the fov, default is `min(innerWidth, innerHeight)`.
   * `wireframeThickness` to change the wireframe thickness, default is `1`.
+  * `verbose` is a bool to display debug logging.
 
 ### Modes
 

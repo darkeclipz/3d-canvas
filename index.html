@@ -20,6 +20,7 @@
         var toggleCoordinates   = function() { keysToggled[KEY_C] = !keysToggled[KEY_C]; };
         var toggleVertices      = function() { keysToggled[KEY_V] = !keysToggled[KEY_V]; };        
         var toggleLightning     = function() { keysToggled[KEY_L] = !keysToggled[KEY_L]; };  
+        var toggleUI            = function() { keysToggled[KEY_U] = !keysToggled[KEY_U]; };
     </script>
     <script src="math.js"></script>
     <script src="vec.js"></script>
@@ -49,6 +50,7 @@
         // Pre-render initialization
         camera.position = new Vec3(-0.45, -2.1, -4.19);
         camera.rotation = new Vec2(-0.37, -0.42);
+        toggleUI();
         toggleFaces();
 
         // Add lights
@@ -72,7 +74,8 @@
                 displayWireframe    = keysToggled[KEY_X],
                 displayCoordinates  = keysToggled[KEY_C],
                 displayVertices     = keysToggled[KEY_V],
-                displayLightning    = keysToggled[KEY_L];
+                displayLightning    = keysToggled[KEY_L],
+                displayUI           = keysToggled[KEY_U];
 
             var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
                 y = cameraMoveSpeed * Math.cos(camera.rotation.x);
@@ -204,39 +207,42 @@
             }
         
             // Post-render
-            font("16px " + fontFamily);
-            color(CL_WHITE);
-            uitext(10,45,"Current frame: " + currentFrame);
-            uitext(10,65,"Camera position: " + camera.position.toString());
-            uitext(10,85,"Camera rotation: " + camera.rotation.toString());
-            uitext(10,105,"Toggle faces (Z): " + displayFaces);
-            uitext(10,125,"Toggle wireframe (X): " + displayWireframe);
-            uitext(10,145,"Toggle coordinates (C): " + displayCoordinates);
-            uitext(10,165,"Toggle vertices (V): " + displayVertices);
-            uitext(10,185,"Toggle lightning (L): " + displayLightning);
-            uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
+            if(displayUI) {
+                font("16px " + fontFamily);
+                color(CL_WHITE);
+                uitext(10,45,"Current frame: " + currentFrame);
+                uitext(10,65,"Camera position: " + camera.position.toString());
+                uitext(10,85,"Camera rotation: " + camera.rotation.toString());
+                uitext(10,105,"Toggle faces (Z): " + displayFaces);
+                uitext(10,125,"Toggle wireframe (X): " + displayWireframe);
+                uitext(10,145,"Toggle coordinates (C): " + displayCoordinates);
+                uitext(10,165,"Toggle vertices (V): " + displayVertices);
+                uitext(10,185,"Toggle lightning (L): " + displayLightning);
+                uitext(10,205,"Toggle UI (U): " + displayUI);
+                uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
-            if(!mouseLocked) {
-                color(CL_GRAY);
-                font("44px " + fontFamily);
-                uitext(innerWidth/2-250, 100, "Click to look around");
-                font("22px " + fontFamily);
-                uitext(innerWidth/2-120, 150, "(No touch support)");
-            }
-            if(displayCoordinates && uiCoordinatesTooMany) {
-                color(CL_RED);
-                font("12px " + fontFamily);
-                uitext(280, 144, uiCoordinatesTooMany);
-            }
+                if(!mouseLocked) {
+                    color(CL_GRAY);
+                    font("44px " + fontFamily);
+                    uitext(innerWidth/2-250, 100, "Click to look around");
+                    font("22px " + fontFamily);
+                    uitext(innerWidth/2-120, 150, "(No touch support)");
+                }
+                if(displayCoordinates && uiCoordinatesTooMany) {
+                    color(CL_RED);
+                    font("12px " + fontFamily);
+                    uitext(280, 144, uiCoordinatesTooMany);
+                }
 
-            // FPS
-            passTimestamp = +new Date();
-            renderTime = passTimestamp - previousPassTimestamp;
-            previousPassTimestamp = passTimestamp;
-            var actualFps = 1000 / renderTime;
-            font("16px " + fontFamily);
-            color(CL_WHITE);
-            uitext(10,25,"FPS: " + Math.round(actualFps) + ", FOV: " + camera.fov);
+                // FPS
+                passTimestamp = +new Date();
+                renderTime = passTimestamp - previousPassTimestamp;
+                previousPassTimestamp = passTimestamp;
+                var actualFps = 1000 / renderTime;
+                font("16px " + fontFamily);
+                color(CL_WHITE);
+                uitext(10,25,"FPS: " + Math.round(actualFps) + ", FOV: " + camera.fov);
+            }
             
             currentFrame++;
             if(rendering) {
