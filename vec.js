@@ -7,6 +7,10 @@ function Vec3(x,y,z) {
         return "(" + rnd(this.x,2) + ", " + rnd(this.y,2) + ", " + rnd(this.z,2) + ")";
     }
     this.add = function(v) {
+        var value = parseFloat(v);
+        if(!isNaN(value)) {
+            v = new Vec3(value, value, value);
+        }
         return new Vec3(this.x+v.x, this.y+v.y, this.z+v.z);
     }
     this.vmult = function(v) {
@@ -34,6 +38,9 @@ function Vec3(x,y,z) {
     }
     this.toRgb = function() {
         return "rgb(" + this.x + "," + this.y + "," + this.z + ")";
+    }
+    this.apply = function(f) {
+        return new Vec3(f(this.x), f(this.y), f(this.z));
     }
 }
 
