@@ -33,7 +33,7 @@ function Face(vertices, color) {
     this.vertices = vertices;
     this.color = color;
 
-    // Calculates the average vertex position.
+    // Calculates the center vertex position.
     this.center = function(vertexLookup) {
         var x = 0, y = 0; z = 0;
         for(var i=0; i < this.vertices.length; i++) {

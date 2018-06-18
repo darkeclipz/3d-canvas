@@ -1,4 +1,4 @@
-// Creates a unit cube.
+// (Obsolete: still used in demos) Creates a unit cube.
 function Cube() {
     this.vertices = [];
     this.edges = [];
