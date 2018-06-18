@@ -42,7 +42,7 @@ var pointerLockCallback = function pointerLock() {
 
     }
 }
-var registerMouseCallback = function() {
+var registerMouse = function() {
     if (document.pointerLockElement === canvas ||
         document.mozPointerLockElement === canvas ||
         document.webkitPointerLockElement === canvas) {

@@ -39,8 +39,8 @@
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
-            mouseLocked = registerMouseCallback(); // Register and deregisters the mousemove
-                                                   // event when the pointer lock changes.
+            mouseLocked = registerMouse(); // Register and deregisters the mousemove
+                                           // event when the pointer lock changes.
             var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
             var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
             camera.rotation.x -= movementX / mouseSensitivity;
