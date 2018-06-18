@@ -160,6 +160,27 @@ The following math functions are defined:
  * `index(x,y,width)` returns the index in a list for an item in a x*y grid with width w.
  * `mix(vec3, vec3, alpha)` mix two vectors, useful for mixing colors.
 
+### Draw
+
+This are functions for drawing on the canvas. To initialize a new canvas:
+
+ 1. Create the global `canvas` and `ctx` variables with `createGlobalCanvas("id")`.
+ 2. Optionally: draw in the center of the screen with `setScreenCenterOffset()`.
+
+The following functions can be used to draw:
+
+ * `clear()` clears the canvas, uses `backgroundColor` as default color.
+ * `rectangle(x,y,w,h)` draws a rectangle.
+ * `circle(x,y,r)` draw a circle.
+ * `line(x1,y1,x2,y2,thickness)` draws a line.
+ * `polygon(points[])` draws a line between the points (`{x:0, y:0}`).
+ * `fillColor(c)` set the fill color.
+ * `strokeColor(c)` set the stroke color.
+ * `color(c)` set both the fill and stroke color.
+ * `font(f)` set a font, e.g.: `12px Arial`.
+ * `uitext(x,y,text)` draw a text without the offset.
+ * `text(x,y,text)` draw a text with the offset.
+
 ## License
 
 I hereby grant you to do whatever you want with it. There is no license.
