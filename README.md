@@ -39,7 +39,8 @@ The widget supports the following keys:
  * Toggle the faces with `Z`.
  * Toggle the wireframe with `X`.
  * Toggle the vertices with `V`.
- * Toggle coordinates `C`.
+ * Toggle coordinates with `C`, only works for small meshes.
+ * Toggle UI with `U`.
 
  The angle of the camera can be changed with the mouse, _click on the canvas_ to lock the pointer.
 
