@@ -87,7 +87,7 @@ A mesh holds all the vertices, edges, and faces. More importantly, it enables us
 
 A cube mesh can be created with `generateCubeMesh`, and a surface with `generateSurfaceMesh(width,height)`.
 
-It is possible to create a `MeshGroup` and add meshes to it. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateY`. However, the mesh still need to be pushed into the global `meshes` list. It is simply a reference.
+It is possible to create a `MeshGroup` and add meshes to it. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateY`. However, the mesh still need to be pushed into the global `meshes` list. It is merely a reference.
 
 ### Lights
 
@@ -99,7 +99,7 @@ A light can be created with `new Light(vec3 pos, vec3 color, brightness)`.
 
 ### Camera
 
-A global object `camera` holds a `Camera` object has a `position`, `rotation`, and a field of fiew `fov`. 
+A global object `camera` holds a `Camera` object which has a `position`, `rotation`, and a field of fiew `fov`. 
 
  * `camera.position` is a `vec3` with the position.
  * `camera.rotation` is a `vec2` with the rotation XY.

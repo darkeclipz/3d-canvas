@@ -65,6 +65,7 @@
         }      
 
         // Main render loop.
+        var previousPassTimestamp = +new Date();
         var render = function() {
             // Handle keyboard 
             var displayFaces        = keysToggled[KEY_Z],
@@ -84,7 +85,7 @@
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
 
             // Create an animated surface with sin(x*x+y*y).
-            var t = currentFrame / 16,
+            var t = currentFrame / 32,
                 surfaceSize = 32, 
                 surfaceScale = 4, 
                 surface = generateSurfaceMesh(surfaceSize, surfaceSize);
@@ -99,9 +100,8 @@
                 var face = surface.faces[i];
                 var faceCenter = face.center(surface.vertices);
                 face.color = new Vec3(0,2,4)
-                    .add(new Vec3(faceCenter.x, faceCenter.y, faceCenter.y))
-                    .apply(Math.abs)
-                    .add(new Vec3(t,t,t))
+                    .add(new Vec3(faceCenter.x, faceCenter.y, faceCenter.x))
+                    .add(t)
                     .apply(Math.cos)
                     .scale(0.5)
                     .add(0.5)
@@ -206,7 +206,6 @@
             // Post-render
             font("16px " + fontFamily);
             color(CL_WHITE);
-            uitext(10,25,"FPS: " + fps + ", FOV: " + fov);
             uitext(10,45,"Current frame: " + currentFrame);
             uitext(10,65,"Camera position: " + camera.position.toString());
             uitext(10,85,"Camera rotation: " + camera.rotation.toString());
@@ -229,6 +228,15 @@
                 font("12px " + fontFamily);
                 uitext(280, 144, uiCoordinatesTooMany);
             }
+
+            // FPS
+            passTimestamp = +new Date();
+            renderTime = passTimestamp - previousPassTimestamp;
+            previousPassTimestamp = passTimestamp;
+            var actualFps = 1000 / renderTime;
+            font("16px " + fontFamily);
+            color(CL_WHITE);
+            uitext(10,25,"FPS: " + Math.round(actualFps) + ", FOV: " + camera.fov);
             
             currentFrame++;
             if(rendering) {
