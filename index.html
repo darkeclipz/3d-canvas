@@ -85,8 +85,6 @@
 
         // Main render loop.
         var render = function() {
-            clear();
-
             // Rotate the cubes as animation. First we need to translate
             // the cube back to the origin (0,0,0), then rotate, and translate
             // back to the position.
@@ -112,6 +110,8 @@
 
             // Sort the depth buffer on distance, we want to draw the furthest face first.
             depthBuffer.sort(function(a, b) { return b.distance - a.distance });
+
+            clear(); // Clear the screen for redrawing.
 
             // Draw all the faces in the depth buffer.
             for(var i=0; i < depthBuffer.length; i++) {
@@ -139,7 +139,7 @@
             if(!mouseLocked) {
                 color(CL_GRAY);
                 font("44px " + fontFamily);
-                uitext(innerWidth/2-300, 100, "Click to lock the mouse");
+                uitext(innerWidth/2-250, 100, "Click to look around");
             }
 
             currentFrame++;
