@@ -27,7 +27,7 @@ The widget supports the following keys:
  * `W`, `A`, `S`, `D` to move around.
  * `Q`, `E` to go up/down.
 
- The angle of the camera can be changed with the mouse.
+ The angle of the camera can be changed with the mouse, _click on the canvas_ to lock the pointer.
 
 ## License
 
