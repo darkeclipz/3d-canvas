@@ -39,3 +39,15 @@ var bool2int = function(b) {
 var interpolate = function(a,b,alpha) {
     return a + (b - a) * alpha;
 }
+
+// Keep a variable bound within a range.
+var rbound = function(x,a,b) {
+    if(x < a) return a;
+    if(x > b) return b;
+    return x;
+}
+
+// Return the array index of an element in a grid.
+function index(x, y, width) { 
+    return width * y + x; 
+}

@@ -40,17 +40,23 @@
             meshes = [],
             mouseLocked = false,
             clipMargin = 250,
-            clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
+            clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
+            wireframeThickness = 1;
 
         // Pre-render initialization
         camera.position = new Vec3(-5.2, -2.8, -5.23);
         camera.rotation = new Vec2(-0.81, -0.4);
+        
+        //toggleWireframe();
         toggleFaces();
-        toggleVertices();
 
         // Add meshes
-        var surfaceSize = 50, surfaceScale = 5, surface = generateSurfaceMesh(surfaceSize, surfaceSize);
+        var surfaceSize = 100, 
+            surfaceScale = 5, 
+            surface = generateSurfaceMesh(surfaceSize, surfaceSize);
+
         surface.vmult(new Vec3(surfaceScale,1,surfaceScale));
+        surface.applyToY(function(x,y) { return 1/8*Math.sin(x*x + y*y); });
         meshes.push(surface);
 
         // Handles movement with the mouse.
@@ -130,7 +136,7 @@
 
                         if(clip(a.x, -clipBounds.x, clipBounds.x) && clip(a.y, -clipBounds.y, clipBounds.y)
                         && clip(b.x, -clipBounds.x, clipBounds.x) && clip(b.y, -clipBounds.y, clipBounds.y)) {
-                            line(a.x,a.y,b.x,b.y, 3);    
+                            line(a.x,a.y,b.x,b.y, wireframeThickness);    
                         }
                     }
                 }

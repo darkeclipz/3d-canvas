@@ -108,9 +108,20 @@ function generateCubeMesh() {
 
 function generateSurfaceMesh(w,h) {
     var mesh = new Mesh();
-    for(var x=0; x<w; x++) {
-        for(var y=0; y<h; y++) {
+    for(var y=0; y<h; y++) {
+        for(var x=0; x<w; x++) {
             mesh.vertices.push(new Vec3(interpolate(-1,1,x/w), 0, interpolate(-1,1,y/h)));
+            if(x > 0 && y > 0) {
+                mesh.edges.push(new Edge(mesh.vertices.length-1, index(x,y-1,w)));
+                mesh.edges.push(new Edge(mesh.vertices.length-1, index(x-1,y,w)));
+                mesh.faces.push(new Face([index(x,y,w), index(x,y-1,w), index(x-1,y-1,w),  index(x-1,y,w)], CL_BLUE));
+            }
+            if(x == 0 && y > 0) {
+                mesh.edges.push(new Edge(mesh.vertices.length-1, index(x,y-1,w)));
+            }
+            if(x > 0 && y == 0) {
+                mesh.edges.push(new Edge(mesh.vertices.length-1, index(x-1,y,w)));
+            }
         }
     }
     return mesh;
