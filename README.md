@@ -19,6 +19,7 @@ More examples (previous versions):
  * [Single cube](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-single-cube.html)
  * [3x3 grid](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-3x3-grid.html)
  * [Faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-faces.html)
+ * [Depth buffer + controls](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-depth-buffer.html)
 
 ## Controls
 
@@ -27,7 +28,7 @@ The widget supports the following keys:
  * `W`, `A`, `S`, `D` to move around.
  * `E`, `Q` to go up/down.
  * Toggle the faces with `Z`.
-* Toggle the wireframe with `X`.
+ * Toggle the wireframe with `X`.
  * Toggle the vertices with `V`.
  * Toggle coordinates `C`.
 
