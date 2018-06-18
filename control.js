@@ -47,7 +47,9 @@ var registerMouseCallback = function() {
         document.mozPointerLockElement === canvas ||
         document.webkitPointerLockElement === canvas) {
         document.addEventListener("mousemove", mouseCallback, false);
+        return true;
     } else {
         document.removeEventListener("mousemove", mouseCallback, false);
+        return false;
     }
 }

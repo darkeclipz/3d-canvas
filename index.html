@@ -30,7 +30,8 @@
             cameraMoveSpeed = 0.1,
             mouseSensitivity = 500,
             fontFamily = "Orbitron",
-            meshes = [];
+            meshes = [],
+            mouseLocked = false;
 
         // Set an initial position for the camera.
         //camera.position = new Vec3(-5.91, -4.1, -7.84);
@@ -38,8 +39,8 @@
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
-            registerMouseCallback(); // Register and deregisters the mousemove
-                                     // event when the pointer lock changes.
+            mouseLocked = registerMouseCallback(); // Register and deregisters the mousemove
+                                                   // event when the pointer lock changes.
             var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
             var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
             camera.rotation.x -= movementX / mouseSensitivity;
@@ -104,7 +105,7 @@
                 for(var j=0; j < mesh.faces.length; j++) {
                     // Find the vertex in the center of the face and calculate the distance
                     // of this vertex to the camera.
-                    distance = camera.position.distance(mesh.faces[j].average(mesh.vertices));
+                    distance = camera.position.distance(mesh.faces[j].center(mesh.vertices));
                     depthBuffer.push({mesh: i, face: j, distance: distance});
                 }
             }
@@ -135,6 +136,11 @@
             uitext(10,65,"Camera position: " + camera.position.toString());
             uitext(10,85,"Camera rotation: " + camera.rotation.toString());
             uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
+            if(!mouseLocked) {
+                color(CL_GRAY);
+                font("44px " + fontFamily);
+                uitext(innerWidth/2-300, 100, "Click to lock the mouse");
+            }
 
             currentFrame++;
             if(rendering) {
