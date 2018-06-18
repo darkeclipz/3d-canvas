@@ -112,13 +112,13 @@ The main rendering algorithm is:
 5. Sort the depth buffer.
 6. Draw the faces (furthest first).
 7. Transform and clip coordinates.
-  1. Find the distance from the face to the light source.
-  2. Mix the color from the face and the light source based on the distance.
+    * Find the distance from the face to the light source.
+    * Mix the color from the face and the light source based on the distance.
 8. Draw the wireframe.
-  0. Transform and clip coordinates.
+    * Transform and clip coordinates.
 9. Draw the vertices.
-  0. Transform and clip coordinates.
-  1. Draw the UI with coordinates.
+    * Transform and clip coordinates.
+    * Draw the UI with coordinates.
 10. Draw UI text.
 11. Set timeout for next pass.
 
