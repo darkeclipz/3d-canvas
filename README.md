@@ -20,6 +20,7 @@ More examples (previous versions):
  * [3x3 grid](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-3x3-grid.html)
  * [Faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-faces.html)
  * [Depth buffer + controls](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-depth-buffer.html)
+ * [Cube surface](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-cube-surface.html)
 
 ## Controls
 

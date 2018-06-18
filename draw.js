@@ -20,13 +20,13 @@ var createGlobalCanvas = function(element) {
     canvas = document.getElementById(element);
     canvas.width = innerWidth;
     canvas.height = innerHeight;
-    if(canvas.getContext) {
-        ctx = canvas.getContext("2d");
-        ctx.font = "16px Arial";
-        console.log("Canvas context initialized.");
+    if(!canvas.getContext) {
+        console.log(errorCtxFail);
+        return;
     }
-    console.log(errorCtxFail);
-}
+    ctx = canvas.getContext("2d");
+    ctx.font = "16px Arial";
+    console.log("Canvas context initialized on element '" + element + "'.");}
 
 // Draw on the screen center.
 var setCenterScreenOffset = function() {

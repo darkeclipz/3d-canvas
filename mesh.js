@@ -24,6 +24,30 @@ function Mesh() {
     }
 }
 
+function MeshGroup() {
+    this.meshes = [];
+    this.scale = function(scalar) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].scale(scalar);
+        }
+    }
+    this.translate = function(v) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].translate(v);
+        }
+    }
+    this.vmult = function(v) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].vmult(v);
+        }
+    }
+    this.rotateY = function(angle) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].rotateY(angle);
+        }
+    }
+}
+
 function Edge(a,b) {
     this.a = a;
     this.b = b;
