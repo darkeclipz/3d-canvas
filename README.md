@@ -26,6 +26,10 @@ The widget supports the following keys:
 
  * `W`, `A`, `S`, `D` to move around.
  * `E`, `Q` to go up/down.
+ * Toggle the faces with `Z`.
+* Toggle the wireframe with `X`.
+ * Toggle the vertices with `V`.
+ * Toggle coordinates `C`.
 
  The angle of the camera can be changed with the mouse, _click on the canvas_ to lock the pointer.
 
@@ -34,10 +38,6 @@ The widget supports the following keys:
  Things that can be improved:
 
   * Implement forward/backward: Add a ray class, and find the angle between the camera, and the object we are looking at. If the angle is within bounds, the object is visible and in front of us. Otherwise, the object is on the sides, or back, and we do not want to draw it.
-  * Toggle the faces with `Z`.
-  * Toggle the wireframe with `X`.
-  * Toggle the vertices with `V`.
-  * Toggle coordinates `C`.
 
 ## License
 
