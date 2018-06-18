@@ -31,11 +31,13 @@
             mouseSensitivity = 500,
             fontFamily = "Orbitron",
             meshes = [],
-            mouseLocked = false;
+            mouseLocked = false,
+            clipMargin = 250;
+            clipBoundsX = innerWidth/2+clipMargin;
+            clipBoundsY = innerHeight/2+clipMargin;;
 
         camera.position = new Vec3(-7.84, -1.4, -8.66);
         camera.rotation = new Vec2(-0.83, -0.47);
-
         keysToggled[KEY_Z] = true; // Enable display faces.
 
         // Handles movement with the mouse.
@@ -115,14 +117,19 @@
                 for(var i=0; i < depthBuffer.length; i++) {
                     mesh = meshes[depthBuffer[i].mesh];
                     face = mesh.faces[depthBuffer[i].face];
+                    inbound = true;
                     // Find all the points in the face and draw a polygon.
                     points = [];
                     for(j=0; j < face.vertices.length; j++) {
                         v = transform(mesh.vertices[face.vertices[j]], camera);
-                        points.push({x: v.x, y: v.y});
+                        if(clip(v.x, -clipBoundsX, clipBoundsX) && clip(v.y, -clipBoundsY, clipBoundsY)) {
+                            points.push({x: v.x, y: v.y});
+                        }
                     }
-                    color(face.color);
-                    polygon(points);
+                    if(points.length > 2) {
+                        color(face.color);
+                        polygon(points);
+                    }
                 }
             }
 
@@ -133,7 +140,11 @@
                     for(var j=0; j<meshes[i].edges.length; j++) {
                         var a = transform(meshes[i].vertices[meshes[i].edges[j].a], camera),
                             b = transform(meshes[i].vertices[meshes[i].edges[j].b], camera);
-                        line(a.x,a.y,b.x,b.y, 3);
+
+                        if(clip(a.x, -clipBoundsX, clipBoundsX) && clip(a.y, -clipBoundsY, clipBoundsY)
+                        && clip(b.x, -clipBoundsX, clipBoundsX) && clip(b.y, -clipBoundsY, clipBoundsY)) {
+                            line(a.x,a.y,b.x,b.y, 3);    
+                        }
                     }
                 }
             }

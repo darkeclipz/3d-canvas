@@ -23,3 +23,8 @@ var rnd = function(value,decimals) {
     factor=Math.pow(10,decimals)
     return Math.round(value*factor)/factor;
 }
+
+var clip = function(x,a,b) {
+    if(x >= a && x <= b) return true;
+    return false;
+}
