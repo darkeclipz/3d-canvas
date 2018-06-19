@@ -8,7 +8,7 @@ The basic idea is to have a bunch of vertices in 3D space. Those vertices are ge
 
 ## How?
 
-I have written a [small explanation for the perspective projection](https://darkeclipz.github.io/simple-perspective-projection.html).
+I have written a [small explanation for the perspective projection](https://darkeclipz.github.io/simple-3d-to-2d-projection/simple-perspective-projection.html).
 
 ## Live demo
 
