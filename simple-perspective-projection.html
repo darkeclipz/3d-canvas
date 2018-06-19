@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Simple perspective projection</title>
+        <style>
+        body{margin:40px auto;max-width:650px;line-height:1.6;font-size:18px;color:#444;padding:0 10px}h1,h2,h3{line-height:1.2}
+        img{margin:30px 0;}
+        </style>
+    </head>
+    <body>
+        <h1>Simple perspective projection</h1>
+        This example will show a basic perspective projection. This is the meat of the <code>transform</code> function, which can be found in <code>math.js</code>.
+
+        <h2>Coordinate system</h2>
+        First we need a 3D coordinate system. The coordinate system will have a x-axis, y-axis, and z-axis. 
+        Any point $P$ within the coordinate system can be indicated with a vector, which is notated as $\vec{v} = [x, y, z]$, where $x,y,z \in \mathbb{R}$.
+        <center><img src="img\coordinate-system.gif"/></center>
+        The point $P$ is then transformed to a 2D coordinate system, in our case the canvas element. The $z$ element is used to apply the perspective to $x$ and $y$.
+
+        <h2>Cube</h2>
+        We will need an object which we can project. A simple example is a cube. A cube exists out of vertices, edges and faces.
+        <center><img src="img\cube.gif"/></center>
+        To keep it simple, we will only define the vertices and edges. 
+        The center of the cube is at the <i>origin</i>, which is vector $[0, 0, 0]$. 
+        The vertices are around the origin. An example for a vertex is $[1,1,1]$. Labeling all the vertices gives:
+        <center><img style="width: 50%" src="img\cube-vertices.png"/></center>
+        Let's define the cube, so we can use it later on. 
+
+        <br/><br/>
+        <code>
+            var cube = {
+                vertices: [ [-1,-1,1], [1,-1,1], [1,1,1], [-1,1,1], [-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1] ], 
+                edges: [ [0,1], [1,2], [2,3], [3,0], [4, 5], [5,6], [6,7], [7,4], [3,7], [2,6], [0,4], [1,5] ]
+            };
+        </code>
+
+        <h2>Camera</h2>
+        We also need a <i>camera</i>, which is used to move around in the 3D coordinate system. For simplicity, we will define a camera at position $[0,0,-5]$.
+
+        <br/><br/>
+        <code>var camera = [0,0,-5];</code>
+        <br/><br/>
+        Notice that the camera is not moving; the objects are moving.
+
+        <h2>Perspective projection</h2>
+        Alright, we are going to do the perspective projection. The idea is to create a vanishing point for the $z$ coordinate. A nice illustration is:
+
+        <center><img style="width:50%" src="img\projection.gif"/></center>
+
+        As an example, we will calculate this by hand, for a point $P$ positioned at $[1,1,1]$.
+        The formula to project from 3D to 2D is:
+        $$ P_{\text{projected}} = \begin{bmatrix} x \cdot \dfrac{\text{fov}}{z} \\ y \cdot \dfrac{\text{fov}}{z}\end{bmatrix} $$
+        where $\text{fov}$ is the width or height of our 2D space. 
+        For example, if our canvas is $w=800$ and $h=600$, the $\text{fov}$ we will use, is: $600$. Use whichever is smaller: $\text{fov} = \min(w,h)$.
+
+        To take our camera into account, we first add the camera position to $P$:
+        $$ P_{\text{camera}} = \begin{bmatrix} P_x + \text{camera}_x \\ P_y + \text{camera}_y \\ P_z + \text{camera}_z\end{bmatrix}. $$
+
+        Plugging this back into the projection equation, gives:
+
+        $$ P_{\text{projected}} = \begin{bmatrix} (P_x + \text{camera}_x) \cdot \dfrac{\text{fov}}{P_z + \text{camera}_z} \\ (P_y + \text{camera}_y) \cdot \dfrac{\text{fov}}{P_z + \text{camera}_z} \end{bmatrix}. $$
+ 
+        To transform $P$, we plug the values into the equation:
+
+        $$ P_{\text{projected}} = \begin{bmatrix} (1 + 0) \cdot \dfrac{\text{600}}{1 + (-5)} \\ (1 + 0) \cdot \dfrac{\text{600}}{1 + (-5)} \end{bmatrix} $$
+
+        which gives us our point in 2D space, positioned at $[-150, -150]$.
+
+        <h2>Drawing the cube</h2>
+        To draw the cube, we will look at each edge in the cube. 
+        Each edge has two vertices: $\vec{v}$ and $\vec{u}$ which need to be transformed from 3D to 2D. 
+        First we add the camera position to $\vec{v}$ and $\vec{u}$.
+        Then we apply the transformation to $\vec{v}$ and $\vec{u}$ to find the 2D coordinates. 
+        Additionally, because canvas is centered on the top-left, and we want it in the center, we need to add an offset to $x$ and $y$. 
+        Finally, we draw a line between the two vertices. 
+
+        <br/><br/>
+        Implementing everything results in the following code:
+
+        <pre>
+// Initializing the canvas
+var canvas = document.getElementById("example1");
+canvas.width = 650;
+canvas.height = 400;
+var ctx = canvas.getContext("2d");
+var fov = Math.min(canvas.width, canvas.height);
+
+// We want to use an offset, because (0,0,0) should be
+// in the center of the screen.
+var canvasOffsetX = canvas.width / 2;
+var canvasOffsetY = canvas.height / 2;
+
+// 3D to 2D projection.
+var transform = function(v) {
+    var f = fov / v[2];
+    return [v[0] * f, v[1] * f];
+}
+
+// Used for vector addition.
+var add = function(v,u) {
+    return [v[0] + u[0], v[1] + u[1], v[2] + u[2]];
+}
+
+// Find all the edges, transform the vertices, and draw a line.
+for(var i=0; i < cube.edges.length; i++) {
+    var edge = cube.edges[i];
+    var v = transform(add(cube.vertices[edge[0]], camera));
+    var u = transform(add(cube.vertices[edge[1]], camera));
+    ctx.beginPath();
+    ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
+    ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
+    ctx.stroke();
+}
+            </pre>
+
+        If we run the above code, and draw in a canvas, the result is:
+
+        <canvas id="example1"></canvas>
+
+        Voila, there it is! However, because I only wanted to show the projection, topics such as drawing the faces, painter's algorithm, and animations are left out. <br/><br/>
+        It is important to note that perhaps the orientation of the coordinate system is flipped, but verifying and fixing that is left as an excercise for the reader.
+
+        <h2>Excercise</h2>
+        If the $\text{fov}=10$, and the camera is at $[0,0,-3]$, calculate all the projected vertices of the cube. Draw all the points on a piece of paper, and connect the lines.
+
+        <h2>References</h2>
+        Images shamelessly stolen from Google. Style from <a href="http://bettermotherfuckingwebsite.com/">bettermotherfuckingwebsite.com</a>.
+        
+    </body>
+    <script type="text/x-mathjax-config">
+        // Use $ for inline equations.
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+    </script>
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script>
+        // Cube with vertices and edges.
+        var cube = {
+            vertices: [ [-1,-1,1], [1,-1,1], [1,1,1], [-1,1,1], [-1,-1,-1], [1,-1,-1], [1,1,-1], [-1,1,-1] ], 
+            edges: [ [0,1], [1,2], [2,3], [3,0], [4, 5], [5,6], [6,7], [7,4], [3,7], [2,6], [0,4], [1,5] ]
+        };
+
+        // Camera
+        var camera = [0,0,-5];
+        
+        // Initializing the canvas
+        var canvas = document.getElementById("example1");
+        canvas.width = 650;
+        canvas.height = 400;
+        var ctx = canvas.getContext("2d");
+        var fov = Math.min(canvas.width, canvas.height);
+
+        // We want to use an offset, because (0,0,0) should be
+        // in the center of the screen.
+        var canvasOffsetX = canvas.width / 2;
+        var canvasOffsetY = canvas.height / 2;
+
+        // 3D to 2D projection.
+        var transform = function(v) {
+            var f = fov / v[2];
+            return [v[0] * f, v[1] * f];
+        }
+        
+        // Used for vector addition.
+        var add = function(v,u) {
+            return [v[0] + u[0], v[1] + u[1], v[2] + u[2]];
+        }
+
+        // Find all the edges, transform the vertices, and draw a line.
+        for(var i=0; i < cube.edges.length; i++) {
+            var edge = cube.edges[i];
+            var v = transform(add(cube.vertices[edge[0]], camera));
+            var u = transform(add(cube.vertices[edge[1]], camera));
+            ctx.beginPath();
+            ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
+            ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
+            ctx.stroke();
+        }
+    </script>
+</html>

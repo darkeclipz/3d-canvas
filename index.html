@@ -77,6 +77,7 @@
                 displayLightning    = keysToggled[KEY_L],
                 displayUI           = keysToggled[KEY_U];
 
+            // Apply the camera rotation to the movement.
             var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
                 y = cameraMoveSpeed * Math.cos(camera.rotation.x);
 

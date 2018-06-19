@@ -8,7 +8,7 @@ The basic idea is to have a bunch of vertices in 3D space. Those vertices are ge
 
 ## How?
 
-We need a simple camera, with position `(0, 0, -5)`, looking at `(0, 0, 0)`. Next, we iterate over every vertex and calculate `f=fov/z`. Now to find the 2D coordinates: `cx=x*f` and `cy=y*f`. A fov of `200` will work, but using `min(innerWidth, innerHeight)` gives a nicer image. Notice that there is no front or back, if you go through the cube, it just reappears. This is a very basic perspective projection.
+I have written a [small explanation for the perspective projection](https://darkeclipz.github.io/simple-perspective-projection.html).
 
 ## Live demo
 
