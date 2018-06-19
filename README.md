@@ -1,6 +1,6 @@
 # Simple 3D to 2D projection
 
-This example shows a 3D to 2D projection of a cube.
+This example shows a 3D to 2D projection of a cube. Update: it became a simple 3D render engine in canvas.
 
 ## What?
 

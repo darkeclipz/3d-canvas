@@ -69,6 +69,10 @@
         // Main render loop.
         var previousPassTimestamp = +new Date();
         var render = function() {
+            if(rendering) {
+                requestAnimationFrame(render);
+            }
+
             // Handle keyboard 
             var displayFaces        = keysToggled[KEY_Z],
                 displayWireframe    = keysToggled[KEY_X],
@@ -90,13 +94,13 @@
 
             // Create an animated surface with sin(x*x+y*y).
             var t = currentFrame / 32,
-                surfaceSize = 32, 
-                surfaceScale = 4, 
+                surfaceSize = 50, 
+                surfaceScale = 3, 
                 surface = generateSurfaceMesh(surfaceSize, surfaceSize);
             
             // Move, scale, and apply f.
+            surface.applyToY(function(x,y) { return 1/2*Math.sin(8*(x*x + y*y) + t); });
             surface.vmult(new Vec3(surfaceScale,1,surfaceScale));
-            surface.applyToY(function(x,y) { return 1/4*Math.sin(x*x + y*y + t); });
             surface.translate(new Vec3(surfaceScale/2,0,surfaceScale/2))
 
             // Fade over some colors.
@@ -246,10 +250,6 @@
             }
             
             currentFrame++;
-            if(rendering) {
-                //setTimeout(render, refreshRate);
-                requestAnimationFrame(render);
-            }
         }
 
         // Initialize the canvas and events.
