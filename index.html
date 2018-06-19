@@ -98,7 +98,7 @@
                 surfaceScale = 3, 
                 surface = generateSurfaceMesh(surfaceSize, surfaceSize);
             
-            // Move, scale, and apply f.
+            // Apply f, scale, and move.
             surface.applyToY(function(x,y) { return 1/2*Math.sin(8*(x*x + y*y) + t); });
             surface.vmult(new Vec3(surfaceScale,1,surfaceScale));
             surface.translate(new Vec3(surfaceScale/2,0,surfaceScale/2))
