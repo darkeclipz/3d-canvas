@@ -247,7 +247,8 @@
             
             currentFrame++;
             if(rendering) {
-                setTimeout(render, refreshRate);
+                //setTimeout(render, refreshRate);
+                requestAnimationFrame(render);
             }
         }
 
