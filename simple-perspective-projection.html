@@ -40,7 +40,7 @@
         <br/><br/>
         <code>var camera = [0,0,-5];</code>
         <br/><br/>
-        Notice that the camera is not moving; the objects are moving.
+        Keep in mind that the camera is not moving; the objects are moving.
 
         <h2>Perspective projection</h2>
         Alright, we are going to do the perspective projection. The idea is to create a vanishing point for the $z$ coordinate. A nice illustration is:
@@ -75,50 +75,71 @@
         Finally, we draw a line between the two vertices. 
 
         <br/><br/>
-        Implementing everything results in the following code:
+        
+        We start with initiating the canvas object. We will set a <code>width</code>, <code>height</code>, and the colors.
 
-        <!-- The code is at the bottom of the document, this is a text preview. -->
-        <pre>
-// Initializing the canvas
-var canvas = document.getElementById("example1");
+
+        <pre>var canvas = document.getElementById("example1");
 canvas.width = 650;
 canvas.height = 400;
 var ctx = canvas.getContext("2d");
-var fov = Math.min(canvas.width, canvas.height);
-
-// We want to use an offset, because (0,0,0) should be
-// in the center of the screen.
-var canvasOffsetX = canvas.width / 2;
-var canvasOffsetY = canvas.height / 2;
-
-// 3D to 2D projection.
+ctx.fillStyle = "#fff";
+ctx.strokeStyle = "#000";
+var fov = Math.min(canvas.width, canvas.height);</pre>
+        Because the canvas is centered in the top-left, and we want it in the center, we apply an offset to the $x$ and $y$ coordinates. 
+        In other words, the point $[0,0,0]$ should be in the center of the screen.
+        <pre>var canvasOffsetX = canvas.width / 2;
+var canvasOffsetY = canvas.height / 2;</pre>
+        Then we create a function <code>transform</code>, that will apply the perspective projection.
+        <pre>
 var transform = function(v) {
     var f = fov / v[2];
     return [v[0] * f, v[1] * f];
-}
-
-// Used for vector addition.
+}</pre>
+        Another function, <code>add</code>, which adds two vectors (vector-addition). This is used to add the camera position to the vertex.
+        <pre>
 var add = function(v,u) {
     return [v[0] + u[0], v[1] + u[1], v[2] + u[2]];
-}
+}</pre>
+        This is optional, and not required. I am using it to rotate the cube, as animation.
+        If you want to know how it works, Google is your friend.
+        <pre>
+var rotateY = function(v, angle) {
+    return [v[0] * Math.cos(angle) - v[2] * Math.sin(angle),
+            v[1],
+            v[0] * Math.sin(angle) + v[2] * Math.cos(angle)];
+}</pre>
+        Finally, the main drawing loop. First we clear the screen. Then we apply the rotation to the cube's vertices.
+        We also want to find the edges, and their vertices, add the camera position, and transform them. Finally, we draw a line between the two transformed points.
+        <pre>var draw = function() {
+    // Clear the canvas.
+    ctx.fillRect(0, 0, innerWidth, innerHeight);
+    
+    // Rotate the cube.
+    for(var i=0; i < cube.vertices.length; i++) {
+        cube.vertices[i] = rotateY(cube.vertices[i], 0.01);
+    }
 
-// Find all the edges, transform the vertices, and draw a line.
-for(var i=0; i < cube.edges.length; i++) {
-    var edge = cube.edges[i];
-    var v = transform(add(cube.vertices[edge[0]], camera));
-    var u = transform(add(cube.vertices[edge[1]], camera));
-    ctx.beginPath();
-    ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
-    ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
-    ctx.stroke();
-}
-            </pre>
+    // Find all the edges, transform the vertices, and draw a line.
+    for(var i=0; i < cube.edges.length; i++) {
+        // Draw cube.
+        var edge = cube.edges[i];
+        var v = transform(add(cube.vertices[edge[0]], camera));
+        var u = transform(add(cube.vertices[edge[1]], camera));
+        ctx.beginPath();
+        ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
+        ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
+        ctx.stroke();
+    }
+    setTimeout(draw, 30);</pre>
+        Having everything in place, we simply call:
+        <pre>draw();</pre>
 
-        If we run the above code, and draw in a canvas, the result is:
+        <hr/>
 
         <canvas id="example1"></canvas>
 
-        Voila, there it is! However, because I only wanted to show the projection, topics such as drawing the faces, painter's algorithm, and animations are left out. <br/><br/>
+        Voila, there it is! Which is also, sadly, the end of the explanation. Because I only wanted to show the basic projection, topics such as drawing the faces, painter's algorithm, and animations are left out. <br/><br/>
         It is important to note that perhaps the orientation of the coordinate system is flipped, but verifying and fixing that is left as an excercise for the reader.
 
         <h2>Excercises</h2>
@@ -155,6 +176,8 @@ for(var i=0; i < cube.edges.length; i++) {
         canvas.width = 650;
         canvas.height = 400;
         var ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.strokeStyle = "#000";
         var fov = Math.min(canvas.width, canvas.height);
 
         // We want to use an offset, because (0,0,0) should be
@@ -173,15 +196,37 @@ for(var i=0; i < cube.edges.length; i++) {
             return [v[0] + u[0], v[1] + u[1], v[2] + u[2]];
         }
 
-        // Find all the edges, transform the vertices, and draw a line.
-        for(var i=0; i < cube.edges.length; i++) {
-            var edge = cube.edges[i];
-            var v = transform(add(cube.vertices[edge[0]], camera));
-            var u = transform(add(cube.vertices[edge[1]], camera));
-            ctx.beginPath();
-            ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
-            ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
-            ctx.stroke();
+        // Rotate around the Y-axis.
+        var rotateY = function(v, angle) {
+            return [v[0] * Math.cos(angle) - v[2] * Math.sin(angle),
+                    v[1],
+                    v[0] * Math.sin(angle) + v[2] * Math.cos(angle)];
         }
+
+        var draw = function() {
+            // Clear the canvas.
+            ctx.fillRect(0, 0, innerWidth, innerHeight);
+            
+            // Rotate the cube.
+            for(var i=0; i < cube.vertices.length; i++) {
+                cube.vertices[i] = rotateY(cube.vertices[i], 0.01);
+            }
+
+            // Find all the edges, transform the vertices, and draw a line.
+            for(var i=0; i < cube.edges.length; i++) {
+                // Draw cube.
+                var edge = cube.edges[i];
+                var v = transform(add(cube.vertices[edge[0]], camera));
+                var u = transform(add(cube.vertices[edge[1]], camera));
+                ctx.beginPath();
+                ctx.moveTo(v[0] + canvasOffsetX, v[1] + canvasOffsetY);
+                ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
+                ctx.stroke();
+            }
+            setTimeout(draw, 30);
+        }
+
+        draw();
+        
     </script>
 </html>
