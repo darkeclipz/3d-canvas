@@ -9,7 +9,7 @@
     </head>
     <body>
         <h1>Simple perspective projection</h1>
-        This example will show a basic perspective projection. This is the meat of the <code>transform</code> function, which can be found in <code>math.js</code>.
+        This example will show a basic perspective projection. This is the meat of the <code>transform</code> function, which can be found in <a href="https://github.com/darkeclipz/simple-3d-to-2d-projection/blob/master/math.js"><code>math.js</code></a>.
 
         <h2>Coordinate system</h2>
         First we need a 3D coordinate system. The coordinate system will have a x-axis, y-axis, and z-axis. 
@@ -69,7 +69,7 @@
         <h2>Drawing the cube</h2>
         To draw the cube, we will look at each edge in the cube. 
         Each edge has two vertices: $\vec{v}$ and $\vec{u}$ which need to be transformed from 3D to 2D. 
-        First we add the camera position to $\vec{v}$ and $\vec{u}$.
+        First we add the camera position to the vertices $\vec{v}$ and $\vec{u}$.
         Then we apply the transformation to $\vec{v}$ and $\vec{u}$ to find the 2D coordinates. 
         Additionally, because canvas is centered on the top-left, and we want it in the center, we need to add an offset to $x$ and $y$. 
         Finally, we draw a line between the two vertices. 
@@ -131,7 +131,8 @@ var rotateY = function(v, angle) {
         ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
         ctx.stroke();
     }
-    setTimeout(draw, 30);</pre>
+    setTimeout(draw, 30);
+}</pre>
         Having everything in place, we simply call:
         <pre>draw();</pre>
 
@@ -145,8 +146,8 @@ var rotateY = function(v, angle) {
         <h2>Excercises</h2>
 
         <ol>
+            <li>Modify the code to add the diagonal edges. The first edge can be added by opening the console (F12), and pasting: <code>cube.edges.push([1,6])</code>.</li>
             <li>If the $\text{fov}=10$, and the camera is at $[0,0,-3]$, calculate all the projected vertices of the cube. Draw all the points on a piece of paper, and connect the lines.</li>
-            <li>Modify the code to add the diagonal edges (Save [Ctrl+S] this page, and edit it).</li>
         </ol>
         
 
