@@ -112,6 +112,8 @@ var rotateY = function(v, angle) {
         Finally, the main drawing loop. First we clear the screen. Then we apply the rotation to the cube's vertices.
         We also want to find the edges, and their vertices, add the camera position, and transform them. Finally, we draw a line between the two transformed points.
         <pre>var draw = function() {
+    requestAnimationFrame(draw);
+
     // Clear the canvas.
     ctx.fillRect(0, 0, innerWidth, innerHeight);
     
@@ -131,7 +133,6 @@ var rotateY = function(v, angle) {
         ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
         ctx.stroke();
     }
-    setTimeout(draw, 30);
 }</pre>
         Having everything in place, we simply call:
         <pre>draw();</pre>
@@ -205,6 +206,8 @@ var rotateY = function(v, angle) {
         }
 
         var draw = function() {
+            requestAnimationFrame(draw);
+
             // Clear the canvas.
             ctx.fillRect(0, 0, innerWidth, innerHeight);
             
@@ -224,7 +227,6 @@ var rotateY = function(v, angle) {
                 ctx.lineTo(u[0] + canvasOffsetX, u[1] + canvasOffsetY);
                 ctx.stroke();
             }
-            setTimeout(draw, 30);
         }
 
         draw();
