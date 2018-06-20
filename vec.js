@@ -34,8 +34,6 @@ function Vec3(x,y,z) {
                         this.x * Math.sin(angle) + this.y * Math.cos(angle),
                         this.z);        
     }
-    // Sorry, no X or Z: check http://mathworld.wolfram.com/RotationMatrix.html, and implement it yourself.
-
     this.dot = function(v) { 
         return this.x*v.x + this.y*v.y + this.z*v.z;
     }
