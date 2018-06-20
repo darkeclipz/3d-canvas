@@ -39,7 +39,7 @@
         currentFrame = 0,
         fov = Math.min(innerWidth,innerHeight),
         camera = new Camera(fov),
-        verbose = true, // Debug console output.
+        verbose = false, // Debug console output.
         cameraMoveSpeed = 0.2,
         mouseSensitivity = 500,
         fontFamily = "Orbitron",
@@ -54,11 +54,14 @@
         backgroundColor = fog.color.toRgb();
 
         // Pre-render initialization
-        camera.position = new Vec3(-8.3, -7.3, -18.71);
-        camera.rotation = new Vec2(-0.5, -0.29);
-        toggleUI();
+        camera.position = new Vec3(-8.48, -4.9, 0.03);
+        camera.rotation = new Vec2(-1.57, -0.2);
+        // toggleUI();
+        console.log("Type `toggleUI()` to display the UI.");
         toggleWireframe();
         toggleBoundingBoxes();
+        toggleCoordinates();
+        toggleFaces();
 
         // Load the stl geometry.
         var stl = cactus_body_stl;
@@ -68,6 +71,7 @@
         var mesh = geo2mesh(geo);
         mesh.scale(0.1);
         mesh.rotateX(Math.PI/2);
+        mesh.rotateY(-Math.PI/3);
         mesh.faceColor(new Vec3(100,255,100));
         meshes.push(mesh);
 
