@@ -21,7 +21,8 @@
         var toggleVertices          = function() { keysToggled[KEY_V] = !keysToggled[KEY_V]; };        
         var toggleLightning         = function() { keysToggled[KEY_L] = !keysToggled[KEY_L]; };  
         var toggleLightningTraces   = function() { keysToggled[KEY_K] = !keysToggled[KEY_K]; };  
-        var toggleLightOrbs         = function() { keysToggled[KEY_J] = !keysToggled[KEY_J]; }
+        var toggleLightOrbs         = function() { keysToggled[KEY_J] = !keysToggled[KEY_J]; };
+        var toggleFog               = function() { keysToggled[KEY_P] = !keysToggled[KEY_P]; };
         var toggleUI                = function() { keysToggled[KEY_U] = !keysToggled[KEY_U]; };
     </script>
     <script src="math.js"></script>
@@ -55,6 +56,7 @@
         toggleUI();
         toggleFaces();
         toggleLightning();
+        toggleFog();
 
         // Load the stl and display the mesh.
         var stl = cactus_body_stl;
@@ -123,6 +125,7 @@
                 displayLightning        = keysToggled[KEY_L],
                 displayLightningTraces  = keysToggled[KEY_K],
                 displayLightOrbs        = keysToggled[KEY_J],
+                displayFog              = keysToggled[KEY_P],
                 displayUI               = keysToggled[KEY_U];
 
             // Apply the camera rotation to the movement.
@@ -176,7 +179,7 @@
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
                                 var d = lights[j].position.distance(face.center(mesh.vertices));
-                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / (d*d) * lights[j].intensity);
+                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / (d*d) * lights[j].alpha);
 
                                 // Draw a line from the face to the light.
                                 if(displayLightningTraces) {
@@ -185,6 +188,12 @@
                                     color("rgba(" + faceColor.x + ", " + faceColor.y + ", " + faceColor.z + ", 0.1");
                                     line(fc.x, fc.y, lc.x, lc.y);
                                 }
+                            }
+
+                            if(displayFog) {
+                                // Apply fog (use distance in depth buffer, saves a sqrt)
+                                var d = depthBuffer[i].distance;
+                                faceColor = mix(faceColor, new Vec3(0,0,0), 1 - Math.max(0, -(1/50 * d) + 1) );
                             }
 
                             faceColor = mix(faceColor, lightColor, 0.5);
@@ -262,7 +271,8 @@
                 uitext(10,185,"Toggle lightning (L): " + displayLightning);
                 uitext(10,205,"Toggle lightning traces (K): " + displayLightningTraces);
                 uitext(10,225,"Toggle light orbs (J): " + displayLightOrbs);
-                uitext(10,245,"Toggle UI (U): " + displayUI);
+                uitext(10,245,"Toggle fog (P): " + displayFog);
+                uitext(10,265,"Toggle UI (U): " + displayUI);
                 uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
                 if(!mouseLocked) {

@@ -30,7 +30,7 @@ More examples (previous versions):
  * [Light](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-light.html)
  * [Colors](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-colors.html)
  * [STL loader](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-stl-loader.html) 
- * [Improved lightning](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-improved-lightning.html)
+ * [Improved lightning + fog](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-improved-lightning+fog.html)
 
 ## Controls
 
