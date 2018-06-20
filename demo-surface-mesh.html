@@ -35,9 +35,9 @@
             clipMargin = 250,
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin);
 
-        camera.position = new Vec3(-25.35, -6.7, -0.19);
+        camera.position = new Vec3(-15.35, -6.7, -0.19);
         camera.rotation = new Vec2(-1.58, -0.53);
-        keysToggled[KEY_V] = true; // Enable vertices.
+        keysToggled[KEY_X]=true;
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -50,15 +50,16 @@
         }
 
         // Create a surface mesh.
-        var surfaceSize = 175;
+        var surfaceSize = 80;
         surface = generateSurfaceMesh(surfaceSize, surfaceSize);
-        var surfaceScale = 20;
+        var surfaceScale = 6;
         surface.vmult(new Vec3(surfaceScale,0,surfaceScale));
         surface.translate(new Vec3(0,2,0));
         meshes.push(surface);
 
         // Main render loop.
         var render = function() {
+            requestAnimationFrame(render);
             // Handle keyboard 
             var displayFaces        = keysToggled[KEY_Z],
                 displayWireframe    = keysToggled[KEY_X],
@@ -82,7 +83,7 @@
                 var v = surface.vertices[i];
                 //var x = cube.vertices[0].x;
                 //var z = cube.vertices[0].z;
-                var amplitude = 1/32;
+                var amplitude = 1/16;
                 var period = 2;
                 var t = currentFrame/5;
                 var y = amplitude*Math.cos(period*(v.x+t)) + amplitude*Math.sin(period*(v.z+t));
@@ -138,7 +139,7 @@
 
                         if(clip(a.x, -clipBounds.x, clipBounds.x) && clip(a.y, -clipBounds.y, clipBounds.y)
                         && clip(b.x, -clipBounds.x, clipBounds.x) && clip(b.y, -clipBounds.y, clipBounds.y)) {
-                            line(a.x,a.y,b.x,b.y, 3);    
+                            line(a.x,a.y,b.x,b.y, 1);    
                         }
                     }
                 }
@@ -194,9 +195,6 @@
             }
             
             currentFrame++;
-            if(rendering) {
-                setTimeout(render, refreshRate);
-            }
         }
 
         // Initialize the canvas and events.
