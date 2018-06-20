@@ -1,8 +1,10 @@
 // XYZ Vector: encapsulated vector maths.
 function Vec3(x,y,z) {
-    this.x=x;
-    this.y=y;
-    this.z=z;
+    if(y == null && z == null) {
+        this.x=x; this.y=x; this.z=x;
+    } else {
+        this.x=x; this.y=y; this.z=z;
+    }
     this.toString = function() {
         return "(" + rnd(this.x,2) + ", " + rnd(this.y,2) + ", " + rnd(this.z,2) + ")";
     }

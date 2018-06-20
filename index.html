@@ -49,7 +49,7 @@
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
             wireframeThickness = 1,
             lights = [],
-            fog = {color: new Vec3(0,0,0), alpha: 1},
+            fog = {color: new Vec3(15), alpha: 1},
             backgroundColor = fog.color.toRgb();
 
         // Pre-render initialization
@@ -89,12 +89,12 @@
         var surface = generateSurfaceMesh(surfaceN,surfaceN);
         surface.scale(surfaceScale);
         surface.translate(new Vec3(surfaceScale/4, 0.2, surfaceScale/4));
-        surface.faceColor(new Vec3(100,100,100));
+        surface.faceColor(new Vec3(100));
         meshes.push(surface);
 
         // Add lights
-        lights.push(new Light(new Vec3(-5, -3, 0), new Vec3(255,255,255), 16, 0.6));
-        lights.push(new Light(new Vec3(16, -9, 0), new Vec3(255,255,255), 64, 1));
+        lights.push(new Light(new Vec3(-5, -3, 0), new Vec3(255), 16, 0.6));
+        lights.push(new Light(new Vec3(16, -9, 0), new Vec3(255), 64, 1));
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -133,8 +133,8 @@
                 displayUI               = keysToggled[KEY_U];
 
             // Apply the camera rotation to the movement.
-            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
-                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
+            var x = Math.sin(camera.rotation.x) * cameraMoveSpeed,
+                y = Math.cos(camera.rotation.x) * cameraMoveSpeed;
 
             // Handle keyboard keydowns.
             if(keysDown[KEY_W] || keysDown[KEY_UP])     { camera.position.x -= x; camera.position.z += y; } // Forward
@@ -186,7 +186,7 @@
                     if(points.length >= 2) {
                         var faceColor = face.color;
                         if(displayLightning && lights.length > 0) {
-                            var lightColor = new Vec3(0,0,0);
+                            var lightColor = new Vec3(0);
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
                                 var d = lights[j].position.distanceSq(face.center(mesh.vertices));
