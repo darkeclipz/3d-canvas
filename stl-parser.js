@@ -161,6 +161,9 @@ var geo2mesh = function(geo) {
     for(var i=0; i < geo.faces.length; i++) {
         var face = geo.faces[i];
         mesh.faces.push(new Face([face[0], face[1], face[2]], new Vec3(100, 100, 100)));
+        mesh.edges.push(new Edge(face[0], face[1]));
+        mesh.edges.push(new Edge(face[1], face[2]));
+        mesh.edges.push(new Edge(face[2], face[0]));
     }
     return mesh;
 };
