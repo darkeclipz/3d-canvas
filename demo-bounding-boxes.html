@@ -338,9 +338,9 @@
         render();
 
         // Useful as commands.
-        var pause = function()  { rendering = false; cancelAnimationFrame(); }
+        var pause  = function() { rendering = false; cancelAnimationFrame(); }
         var resume = function() { rendering = true; render(); }
         var step   = function() { rendering = true; render(); rendering = false; }
-        console.log("Toggle the renderer with 'pause()', and 'resume()'.");
+        console.log("Toggle the renderer with 'pause()', step with `step()`, and 'resume() to continue rendering'.");
     </script>
 </html>

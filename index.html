@@ -36,6 +36,7 @@
     <script>
         // Settings for the rendering.
         var rendering = true, 
+        renderSingleImage = true,
         currentFrame = 0,
         fov = Math.min(innerWidth,innerHeight),
         camera = new Camera(fov),
@@ -43,7 +44,6 @@
         cameraMoveSpeed = 0.2,
         mouseSensitivity = 500,
         fontFamily = "Orbitron",
-        fontFamilyMath = "Amiri", 
         meshes = [],
         mouseLocked = false,
         clipMargin = 250,
@@ -72,7 +72,7 @@
         meshes.push(mesh);
 
         // Add three more meshes in a circle around the origin.
-        var n = 3;
+        var n = 8;
         for(var i=0; i < n; i++) {
             var m = geo2mesh(geo);
             m.scale(0.05);
