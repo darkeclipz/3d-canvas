@@ -56,7 +56,7 @@ The widget supports the following keys:
 
 ## API
 
-Documentation for the API's in the render engine.
+Documentation for the API's in the render engine. 
 
 ### Rendering
 
@@ -78,6 +78,9 @@ To toggle rendering modes. Called before the main render loop.
   * `toggleCoordinates()` render the coordinates (only for small meshes).
   * `toggleVertices()` render the vertices.
   * `toggleLightning()` render the lightning (if there are any lights).
+  * `toggleFog()` render the fog.
+  * `toggleLightningTraces()` draws a line between the faces and lights. (Debug)
+  * `toggleLightOrbs()` draw the lights as small circles. (Debug)
 
 ### Meshes
 
@@ -91,15 +94,15 @@ A mesh holds all the vertices, edges, and faces. More importantly, it enables us
 
 A cube mesh can be created with `generateCubeMesh`, and a surface with `generateSurfaceMesh(width,height)`.
 
-It is possible to create a `MeshGroup` and add meshes to it. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateY`. However, the mesh still need to be pushed into the global `meshes` list. It is merely a reference.
+It is possible to create a `MeshGroup` and add meshes to it. It is useful to create a giant mesh from multiple objects, and be able to transform them with: `scale`, `translate`, `vmult`, and `rotateX/Y/Z`. However, the mesh still need to be pushed into the global `meshes` list. It is merely a reference.
 
 ### Lights
 
-A global variable `lights` holds all the lights that are rendered in the scene. The distance from a face to the light will be calculated. The color from the face is mixed with the color from the light. It requires `toggleLightning()` to render.
+A global variable `lights` holds all the lights that are rendered in the scene. The distance from a face to the light will be calculated. The color from the face is mixed with the color from the light, which can be controlled with `alpha`. It requires `toggleLightning()` to render.
 
   * `lights` holds all the lights in the scene, `push` a `Light` to render it.
 
-A light can be created with `new Light(vec3 pos, vec3 color, brightness)`.
+A light can be created with `new Light(vec3 pos, vec3 color, brightness, alpha)`.
 
 ### Camera
 
@@ -181,7 +184,9 @@ The `Vec3` object provides quick access to vector maths. The following functions
  * `add(vec3)` or `add(scalar)` vector addition.
  * `vmult(vec)` vector-vector multiplication.
  * `scale(scalar)` vector-scalar multiplication.
+ * `rotateX(angle)` rotate around the X-axis.
  * `rotateY(angle)` rotate around the Y-axis.
+ * `rotateZ(angle)` rotate around the Z-axis.
  * `dot(vec3)` dot product between two vectors.
  * `length()` length of the vector.
  * `distance(v)` distance between this vector and `v`.
