@@ -44,6 +44,10 @@ function Vec3(x,y,z) {
         x = this.x-v.x; y = this.y-v.y; z = this.z-v.z;
         return Math.sqrt(x*x + y*y + z*z);
     }
+    this.distanceSq = function(v) {
+        x = this.x-v.x; y = this.y-v.y; z = this.z-v.z;
+        return x*x + y*y + z*z;    
+    }
     this.toRgb = function() {
         return "rgb(" + this.x + "," + this.y + "," + this.z + ")";
     }

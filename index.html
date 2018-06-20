@@ -49,9 +49,8 @@
             clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
             wireframeThickness = 1,
             lights = [],
-            shadowColor = new Vec3(0, 0, 0),
-            shadowAlpha = 1,
-            backgroundColor = shadowColor.toRgb();
+            fog = {color: new Vec3(0,0,0), alpha: 1},
+            backgroundColor = fog.color.toRgb();
 
         // Pre-render initialization
         camera.position = new Vec3(-8.3, -7.3, -18.71);
@@ -190,8 +189,8 @@
                             var lightColor = new Vec3(0,0,0);
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
-                                var d = lights[j].position.distance(face.center(mesh.vertices));
-                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / (d*d) * lights[j].alpha);
+                                var d = lights[j].position.distanceSq(face.center(mesh.vertices));
+                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / d * lights[j].alpha);
 
                                 // Draw a line from the face to the light.
                                 if(displayLightningTraces) {
@@ -207,7 +206,7 @@
                         if(displayFog) {
                             // Apply fog (use distance in depth buffer, saves a sqrt)
                             var d = depthBuffer[i].distance;
-                            faceColor = mix(faceColor, shadowColor, (1 - Math.max(0, -(1/50 * d) + 1) ) * shadowAlpha );
+                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/50 * d) + 1) ) * fog.alpha );
                         }
                         
                         color(faceColor.toRgb());
@@ -316,7 +315,6 @@
         bindKeyup(keyupCallback);
         bindClick(pointerLockCallback); // Create a pointer lock on click
         bindMouse(mouseCallback); // Mouse movement callback
-        setPolygonFillAndStroke();
         render();
 
         // Useful as commands.
