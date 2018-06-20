@@ -29,6 +29,8 @@ More examples (previous versions):
  * [Surface mesh edges + faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh-faces.html)
  * [Light](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-light.html)
  * [Colors](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-colors.html)
+ * [requestAnimationFrame](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-request-animation-frame.html) (Improved FPS)
+ * [STL loader](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-stl-loader.html) (+ improved lightning)
 
 ## Controls
 

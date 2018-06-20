@@ -17,9 +17,19 @@ function Mesh() {
             this.vertices[i] = this.vertices[i].vmult(v);
         }
     }
+    this.rotateX = function(angle) {
+        for(var i=0; i<this.vertices.length; i++) {
+            this.vertices[i] = this.vertices[i].rotateX(angle);
+        }
+    }
     this.rotateY = function(angle) {
         for(var i=0; i<this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].rotateY(angle);
+        }
+    }
+    this.rotateZ = function(angle) {
+        for(var i=0; i<this.vertices.length; i++) {
+            this.vertices[i] = this.vertices[i].rotateZ(angle);
         }
     }
     this.applyToY = function(f) {

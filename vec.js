@@ -19,10 +19,20 @@ function Vec3(x,y,z) {
     this.scale = function(scalar) {
         return new Vec3(scalar*this.x, scalar*this.y, scalar*this.z);
     }
+    this.rotateX = function(angle) {
+        return new Vec3(this.x,
+                        this.y * Math.cos(angle) - this.z * Math.sin(angle),
+                        this.y * Math.sin(angle) + this.z * Math.cos(angle));        
+    }
     this.rotateY = function(angle) {
         return new Vec3(this.x * Math.cos(angle) - this.z * Math.sin(angle),
                         this.y,
                         this.x * Math.sin(angle) + this.z * Math.cos(angle));
+    }
+    this.rotateZ = function(angle) {
+        return new Vec3(this.x * Math.cos(angle) - this.y * Math.sin(angle),
+                        this.x * Math.sin(angle) + this.y * Math.cos(angle),
+                        this.z);        
     }
     // Sorry, no X or Z: check http://mathworld.wolfram.com/RotationMatrix.html, and implement it yourself.
 
