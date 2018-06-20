@@ -141,7 +141,7 @@ var parseStl = function(stl) {
                     state = 'facet normal';
                 } else {
                     console.error(line);
-                    console.error('Invalid state "' + parts[0] + '", should be "endsolid" or "facet normal"');
+                    console.error('Invalid state "' + parts[0] + '", should be "endsolid" or "facet normal or is there a new line"');
                     return;
                 }
                 break;

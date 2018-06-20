@@ -18,6 +18,8 @@ const KEY_F = 70;
 const KEY_SPACE = 32;
 const KEY_L = 76;
 const KEY_U = 85;
+const KEY_K = 75;
+const KEY_J = 74;
 
 // Keep track of which key has been pressed.
 var keysDown = [], keysToggled = [];
