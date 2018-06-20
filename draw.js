@@ -14,6 +14,12 @@ var errorCtxFail = "Failed to get context.";
 var backgroundColor = CL_BLACK;
 var offsetX = 0;
 var offsetY = 0;
+var fill = true;
+var stroke = true;
+
+var setPolygonFill = function() { fill = true; stroke = false; }
+var setPolygonStroke = function() { fill = false; stroke = true; }
+var setPolygonFillAndStroke = function() { fill = true; stroke = true; }
 
 // Initialize the canvas element.
 var createGlobalCanvas = function(element) {
@@ -82,7 +88,8 @@ var polygon = function(points) {
         ctx.lineTo(points[i].x + offsetX, points[i].y + offsetY);
     }
     ctx.lineTo(points[0].x + offsetX, points[0].y + offsetY);
-    ctx.fill();
+    if(fill) ctx.fill();
+    if(stroke) ctx.stroke();
 }
 
 // Set the fill color.

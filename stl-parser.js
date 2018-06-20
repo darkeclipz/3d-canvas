@@ -154,6 +154,7 @@ var parseStl = function(stl) {
 
 var geo2mesh = function(geo) {
     var mesh = new Mesh();
+    mesh.type = "model";
     for(var i=0; i < geo.vertices.length; i++) {
         var vertex = geo.vertices[i];
         mesh.vertices.push(new Vec3(vertex[0], vertex[1], vertex[2]));

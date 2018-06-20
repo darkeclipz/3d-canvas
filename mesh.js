@@ -2,6 +2,7 @@ function Mesh() {
     this.vertices = [];
     this.edges = [];
     this.faces = [];
+    this.type = "none";
     this.scale = function(scalar) {
         for(var i=0; i<this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].scale(scalar);
@@ -92,6 +93,7 @@ function Face(vertices, color) {
 
 function generateCubeMesh() {
     mesh = new Mesh();
+    mesh.type = "cube";
     mesh.vertices.push(new Vec3(-1,-1,-1));
     mesh.vertices.push(new Vec3(1,-1,-1));
     mesh.vertices.push(new Vec3(1,1,-1));
@@ -123,6 +125,7 @@ function generateCubeMesh() {
 
 function generateSurfaceMesh(w,h) {
     var mesh = new Mesh();
+    mesh.type = "surface";
     for(var y=0; y<h; y++) {
         for(var x=0; x<w; x++) {
             mesh.vertices.push(new Vec3(interpolate(-1,1,x/w), 0, interpolate(-1,1,y/h)));
