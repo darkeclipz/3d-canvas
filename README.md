@@ -31,6 +31,7 @@ More examples (previous versions):
  * [Colors](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-colors.html)
  * [STL loader](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-stl-loader.html) 
  * [Improved lightning + fog](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-improved-lightning+fog.html)
+ * [Bounding boxes](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-bounding-boxes.html)
 
 ## Controls
 

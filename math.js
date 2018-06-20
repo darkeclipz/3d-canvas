@@ -58,3 +58,19 @@ function mix(v,u,alpha) {
                      (1-alpha) * v.y + alpha * u.y, 
                      (1-alpha) * v.z + alpha * u.z);
 }
+
+function min(l) {
+    var x = l[0];
+    for(var i=0; i < l.length; i++) {
+        if(l[i] < x) x = l[i];
+    }
+    return x;
+}
+
+function max(l) {
+    var x = l[0];
+    for(var i=0; i < l.length; i++) {
+        if(l[i] > x) x = l[i];
+    }
+    return x;
+}

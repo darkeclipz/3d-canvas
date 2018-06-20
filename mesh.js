@@ -4,45 +4,88 @@ function Mesh() {
     this.faces = [];
     this.type = "none"; // Types are: cube, surface, model
     this.scale = function(scalar) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].scale(scalar);
         }
     }
     this.translate = function(v) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].add(new Vec3(v.x, v.y, v.z));
         }
     }
     this.vmult = function(v) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].vmult(v);
         }
     }
     this.rotateX = function(angle) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].rotateX(angle);
         }
     }
     this.rotateY = function(angle) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].rotateY(angle);
         }
     }
     this.rotateZ = function(angle) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].rotateZ(angle);
         }
     }
     this.applyToY = function(f) {
-        for(var i=0; i<this.vertices.length; i++) {
+        for(var i=0; i < this.vertices.length; i++) {
             v = this.vertices[i];
             this.vertices[i] = new Vec3(v.x, f(v.x, v.z), v.z);
         }
     }
     this.faceColor = function(c) {
-        for(var i=0; i<this.faces.length; i++) {
+        for(var i=0; i < this.faces.length; i++) {
             this.faces[i].color = c;
         }
+    }
+    this.unravelX = function() {
+        var r = [];
+        for(var i=0; i < this.vertices.length; i++) {
+            r.push(this.vertices[i].x);
+        }
+        return r;
+    }
+    this.unravelY = function() {
+        var r = [];
+        for(var i=0; i < this.vertices.length; i++) {
+            r.push(this.vertices[i].y);
+        }
+        return r;
+    }
+    this.unravelZ = function() {
+        var r = [];
+        for(var i=0; i < this.vertices.length; i++) {
+            r.push(this.vertices[i].z);
+        }
+        return r;
+    }
+    this.updateBoundingBox = function() {
+        var minX = min(this.unravelX()), maxX = max(this.unravelX());
+        var minY = min(this.unravelY()), maxY = max(this.unravelY());
+        var minZ = min(this.unravelZ()), maxZ = max(this.unravelZ());
+        var vertices = [[minX, minY, maxZ], [maxX, minY, maxZ], [maxX, maxY, maxZ], [minX, maxY, maxZ],
+                        [minX, minY, minZ], [maxX, minY, minZ], [maxX, maxY, minZ], [minX, maxY, minZ]];
+        var edges    = [[0,1], [1,2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [3, 7], [2, 6]];
+        var faces = [[0,1,2,3], [0,3,7,4], [5,4,7,6], [1,5,6,2], [3,2,6,7], [0,1,5,4]]
+
+        var mesh = new Mesh();
+        mesh.type = "bounding-box";
+        for(var i=0; i < vertices.length; i++) {
+            mesh.vertices.push(new Vec3(vertices[i][0], vertices[i][1], vertices[i][2]));
+        }
+        for(var i=0; i < edges.length; i++) {
+            mesh.edges.push(new Edge(edges[i][0], edges[i][1]));
+        }
+        for(var i=0; i < faces.length; i++) {
+            mesh.faces.push(new Face(faces[i], new Vec3(30)));
+        }
+        this.boundingBox = mesh;
     }
 }
 
