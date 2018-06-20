@@ -50,7 +50,7 @@
         clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
         wireframeThickness = 1,
         lights = [],
-        fog = {color: new Vec3(15), alpha: 1},
+        fog = {color: new Vec3(15), alpha: 0.8},
         backgroundColor = fog.color.toRgb();
 
         // Pre-render initialization
@@ -300,7 +300,7 @@
                 uitext(10,225,"Toggle light orbs (J): " + displayLightOrbs);
                 uitext(10,245,"Toggle fog (P): " + displayFog);
                 uitext(10,265,"Toggle UI (U): " + displayUI);
-                uitext(10,285,"Toggle bounding boxes (wireframe) (B): " + displayUI);
+                uitext(10,285,"Toggle bounding boxes (wireframe) (B): " + displayBoundingBoxes);
                 uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
                 if(!mouseLocked) {
