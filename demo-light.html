@@ -142,7 +142,7 @@
 
                         var baseColor = new Vec3(25,25,25);
                         var lightColor = new Vec3(255,235,200);
-                        var faceColor = mix(baseColor, lightColor, rbound(1/distance * light.brightness, 0, 0.75));
+                        var faceColor = mix(baseColor, lightColor, clamp(1/distance * light.brightness, 0, 0.75));
 
                         color(faceColor.toRgb());
                         polygon(points);

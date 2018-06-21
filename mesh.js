@@ -158,12 +158,12 @@ function generateCubeMesh() {
     mesh.edges.push(new Edge(1,5));
     mesh.edges.push(new Edge(2,6));
     mesh.edges.push(new Edge(3,7));
-    mesh.faces.push(new Face([0,1,2,3], 'red'));
-    mesh.faces.push(new Face([0,3,7,4], 'lime'));
-    mesh.faces.push(new Face([5,4,7,6], 'blue'));
-    mesh.faces.push(new Face([1,5,6,2], 'yellow'));
-    mesh.faces.push(new Face([3,2,6,7], 'grey'));
-    mesh.faces.push(new Face([0,1,5,4], 'grey'));
+    mesh.faces.push(new Face([0,1,2,3], new Vec3(255,0,0)));
+    mesh.faces.push(new Face([0,3,7,4], new Vec3(0,255,0)));
+    mesh.faces.push(new Face([5,4,7,6], new Vec3(0,0,255)));
+    mesh.faces.push(new Face([1,5,6,2], new Vec3(255,255,0)));
+    mesh.faces.push(new Face([3,2,6,7], new Vec3(255,0,255)));
+    mesh.faces.push(new Face([0,1,5,4], new Vec3(0,255,255)));
     return mesh;
 }
 
@@ -176,7 +176,7 @@ function generateSurfaceMesh(w,h) {
             if(x > 0 && y > 0) {
                 mesh.edges.push(new Edge(mesh.vertices.length-1, index(x,y-1,w)));
                 mesh.edges.push(new Edge(mesh.vertices.length-1, index(x-1,y,w)));
-                mesh.faces.push(new Face([index(x,y,w), index(x,y-1,w), index(x-1,y-1,w),  index(x-1,y,w)], CL_BLUE));
+                mesh.faces.push(new Face([index(x,y,w), index(x,y-1,w), index(x-1,y-1,w),  index(x-1,y,w)], new Vec3(30)));
             }
             if(x == 0 && y > 0) {
                 mesh.edges.push(new Edge(mesh.vertices.length-1, index(x,y-1,w)));
