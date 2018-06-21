@@ -99,6 +99,7 @@
         // Add lights
         lights.push(new Light(new Vec3(-5, -3, 0), new Vec3(255), 16, 0.6));
         lights.push(new Light(new Vec3(16, -9, 0), new Vec3(255), 64, 1));
+        lights.push(new Light(new Vec3(0,-10,0), new Vec3(255), 128, 0.125));
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -121,6 +122,7 @@
             var t = currentFrame / 25;
             lights[0].position = lights[0].position.rotateY(0.05);
             lights[1].position = lights[1].position.rotateY(-0.01);
+            lights[2].position = lights[2].position.add(new Vec3(0, Math.cos(t), 0).scale(0.1));
 
             // Rotate the object.
             meshes[0].rotateY(-0.01);
