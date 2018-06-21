@@ -61,6 +61,7 @@
         toggleFog();
         toggleLightOrbs();
         toggleBoundingBoxes();
+        toggleCoordinates();
 
         camera.position = new Vec3(-0.64, -4.8, -15.69);
         camera.rotation = new Vec2(0.14, -0.11);
@@ -233,7 +234,7 @@
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
                                 var d = lights[j].position.distanceSq(face.center(mesh.vertices));
-                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / d * lights[j].alpha);
+                                lightColor = lightColor.mix(lights[j].color, lights[j].brightness / d * lights[j].alpha);
 
                                 // Draw a line from the face to the light.
                                 if(displayLightningTraces) {
@@ -243,13 +244,13 @@
                                     line(fc.x, fc.y, lc.x, lc.y);
                                 }
                             }
-                            faceColor = mix(faceColor, lightColor, 0.5);
+                            faceColor = faceColor.mix(lightColor, 0.5);
                         }
 
                         if(displayFog) {
                             // Apply fog (use distance in depth buffer, saves a sqrt)
                             var d = depthBuffer[i].distance;    // (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha
-                            faceColor = mix(faceColor, fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
+                            faceColor = faceColor.mix(fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
                         }
                         
                         // Gamma correction

@@ -59,7 +59,6 @@ function Vec3(x,y,z) {
     this.distance = function(v) {
         return Math.sqrt(this.distanceSq(v));
     }
-
     this.toRgb = function() {
         return "rgb(" + rnd(this.x, 2) + "," + rnd(this.y, 2) + "," + rnd(this.z, 2) + ")";
     }
@@ -77,6 +76,11 @@ function Vec3(x,y,z) {
     }
     this.fract = function() {
         return this.subtract(this.apply(Math.floor));
+    }
+    this.mix = function(v,alpha) {
+        return new Vec3( (1-alpha) * this.x + alpha * v.x, 
+                         (1-alpha) * this.y + alpha * v.y, 
+                         (1-alpha) * this.z + alpha * v.z);
     }
 }
 
@@ -103,4 +107,10 @@ function Vec2(x,y) {
         x = this.x-v.x; y = this.y-v.y;
         return Math.sqrt(x*x + y*y);
     }
+}
+
+// Rounding function with decimals.
+var rnd = function(value,decimals) {
+    factor=Math.pow(10,decimals)
+    return Math.round(value*factor)/factor;
 }

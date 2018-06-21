@@ -30,11 +30,6 @@ var clip = function(x,a,b) {
     return false;
 }
 
-// Still used in the first demo.
-var bool2int = function(b) {
-    return b ? 1 : 0;
-}
-
 // Interpolate on an interval.
 var interpolate = function(a,b,alpha) {
     return a + (b - a) * alpha;
@@ -43,13 +38,6 @@ var interpolate = function(a,b,alpha) {
 // Return the index of an element in a grid.
 function index(x, y, width) { 
     return width * y + x; 
-}
-
-// Mix two vectors.
-function mix(v,u,alpha) {
-    return new Vec3( (1-alpha) * v.x + alpha * u.x, 
-                     (1-alpha) * v.y + alpha * u.y, 
-                     (1-alpha) * v.z + alpha * u.z);
 }
 
 // Returns lowest value in a list.
@@ -98,4 +86,16 @@ function wrap(x) {
 // Return the fractional part.
 function fract(x) {
     return x - Math.floor(x);
+}
+
+// -- Obsolete: but used in demos --
+
+var bool2int = function(b) {
+    return b ? 1 : 0;
+}
+
+function mix(v,u,alpha) {
+    return new Vec3( (1-alpha) * v.x + alpha * u.x, 
+                     (1-alpha) * v.y + alpha * u.y, 
+                     (1-alpha) * v.z + alpha * u.z);
 }
