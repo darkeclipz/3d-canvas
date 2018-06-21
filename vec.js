@@ -15,6 +15,13 @@ function Vec3(x,y,z) {
         }
         return new Vec3(this.x+v.x, this.y+v.y, this.z+v.z);
     }
+    this.subtract = function(v) {
+        var value = parseFloat(v);
+        if(!isNaN(value)) {
+            v = new Vec3(value, value, value);
+        }
+        return new Vec3(this.x-v.x, this.y-v.y, this.z-v.z);
+    }
     this.vmult = function(v) {
         return new Vec3(this.x*v.x, this.y*v.y, this.z*v.z);
     }
@@ -64,6 +71,12 @@ function Vec3(x,y,z) {
     }
     this.angle = function(v) {
         return Math.acos( Math.abs( v.dot(u) ) / Math.sqrt( this.lengthSq()*v.lengthSq() ) );
+    }
+    this.floor = function() {
+        return this.apply(Math.floor);
+    }
+    this.fract = function() {
+        return this.subtract(this.apply(Math.floor));
     }
 }
 

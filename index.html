@@ -62,17 +62,16 @@
         toggleLightOrbs();
         toggleBoundingBoxes();
 
-
         camera.position = new Vec3(-0.64, -4.8, -15.69);
         camera.rotation = new Vec2(0.14, -0.11);
 
         var cube = generateCubeMesh();
-        cube.faceColor(new Vec3(100));
+        cube.faceColor(new Vec3(200,100,40));
         meshes.push(cube);
 
         var cube2 = generateCubeMesh();
         cube2.translate(new Vec3(3,0,0));
-        cube2.faceColor(new Vec3(100));
+        cube2.faceColor(new Vec3(80,80,220));
         meshes.push(cube2);
 
         var triangle = new Mesh();
@@ -93,6 +92,7 @@
         cactus.rotateX(Math.PI/2)
         cactus.translate(new Vec3(-7,0,0));
         cactus.updateBoundingBox();
+        cactus.faceColor(new Vec3(50,240,100));
         meshes.push(cactus);
 
         var surfaceScale = 40;
@@ -101,7 +101,7 @@
         surface.translate(new Vec3(0,3,0));
         meshes.push(surface);
 
-        lights.push(new Light(new Vec3(0, -5, 0), new Vec3(255), 64, 0.2));
+        lights.push(new Light(new Vec3(0, -5, 0), new Vec3(255), 32, 0.2));
         var light = new Light(new Vec3(15,-1,0), new Vec3(255), 16, 0.5);
         lights.push(light);
 
@@ -393,7 +393,7 @@
         // Useful as commands.
         var pause = function()  { rendering = false; cancelAnimationFrame(); }
         var resume = function() { rendering = true; render(); }
-        var rstep   = function() { rendering = true; render(); rendering = false; }
-        console.log("Toggle the renderer with 'pause()', and 'resume()'.");
+        var frame   = function() { rendering = true; render(); rendering = false; }
+        console.log("Toggle the renderer with 'pause()', and 'resume()', or render a frame with `frame()`.");
     </script>
 </html>

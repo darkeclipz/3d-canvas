@@ -95,7 +95,7 @@ function wrap(x) {
     return (x % 1 + 1) % 1;
 }
 
-// Return the fractional part of an integer.
+// Return the fractional part.
 function fract(x) {
     return x - Math.floor(x);
 }
