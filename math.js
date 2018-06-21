@@ -40,13 +40,6 @@ var interpolate = function(a,b,alpha) {
     return a + (b - a) * alpha;
 }
 
-// Keep a variable bound within a range.
-var rbound = function(x,a,b) {
-    if(x < a) return a;
-    if(x > b) return b;
-    return x;
-}
-
 // Return the index of an element in a grid.
 function index(x, y, width) { 
     return width * y + x; 
@@ -59,6 +52,7 @@ function mix(v,u,alpha) {
                      (1-alpha) * v.z + alpha * u.z);
 }
 
+// Returns lowest value in a list.
 function min(l) {
     var x = l[0];
     for(var i=0; i < l.length; i++) {
@@ -67,6 +61,7 @@ function min(l) {
     return x;
 }
 
+// Returns highest value in a list.
 function max(l) {
     var x = l[0];
     for(var i=0; i < l.length; i++) {
@@ -75,6 +70,27 @@ function max(l) {
     return x;
 }
 
-function angle2(v,u) {
+// Keep a variable bound within a range.
+function clamp(x,a,b) {
+    if(x < a) return a;
+    if(x > b) return b;
+    return x;
+}
 
+// Step function.
+function step(a,x) {
+    if(x < a) return 0;
+    return 1;
+}
+
+// Smoothstep function.
+function smoothstep(a,b,x) {
+    x = clamp((x - a) / (b - a), 0, 1);
+    return x*x * (3 - 2*x);
+    // return x * x * x * (x * (x * 6 - 15) + 10);
+}
+
+// Wrap a value to a range of 0-1.
+function wrap(x) {
+    return (x % 1 + 1) % 1;
 }

@@ -24,6 +24,7 @@
         var toggleLightOrbs         = function() { keysToggled[KEY_J] = !keysToggled[KEY_J]; };
         var toggleFog               = function() { keysToggled[KEY_P] = !keysToggled[KEY_P]; };
         var toggleUI                = function() { keysToggled[KEY_U] = !keysToggled[KEY_U]; };
+        var toggleBoundingBoxes     = function() { keysToggled[KEY_B] = !keysToggled[KEY_B]; };
     </script>
     <script src="math.js"></script>
     <script src="vec.js"></script>
@@ -35,39 +36,44 @@
     <script>
         // Settings for the rendering.
         var rendering = true, 
-            currentFrame = 0,
-            fov = Math.min(innerWidth,innerHeight),
-            camera = new Camera(fov),
-            verbose = true, // Debug console output.
-            cameraMoveSpeed = 0.2,
-            mouseSensitivity = 500,
-            fontFamily = "Orbitron",
-            fontFamilyMath = "Amiri", 
-            meshes = [],
-            mouseLocked = false,
-            clipMargin = 250,
-            clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
-            wireframeThickness = 1,
-            lights = [];
+        renderSingleImage = true,
+        currentFrame = 0,
+        fov = Math.min(innerWidth,innerHeight),
+        camera = new Camera(fov),
+        verbose = true, // Debug console output.
+        cameraMoveSpeed = 0.2,
+        mouseSensitivity = 500,
+        fontFamily = "Orbitron",
+        meshes = [],
+        mouseLocked = false,
+        clipMargin = 250,
+        clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
+        wireframeThickness = 1,
+        lights = [],
+        fog = {color: new Vec3(10), alpha: 1, far: 50},
+        shadow = {color: new Vec3(10), alpha: 1},
+        backgroundColor = fog.color.toRgb(),
+        gamma = 0.975;
 
         // Pre-render initialization
         camera.position = new Vec3(-8.3, -7.3, -18.71);
-        camera.rotation = new Vec2(-0.44, -0.39);
-        toggleUI();
+        camera.rotation = new Vec2(-0.5, -0.29);
         toggleFaces();
-        toggleLightning();
+        toggleLightning()
         toggleFog();
 
-        // Load the stl and display the mesh.
+        // Load the stl geometry.
         var stl = cactus_body_stl;
         var geo = parseStl(stl);
+
+        // Create a mesh from the geometry and add it to the scene.
         var mesh = geo2mesh(geo);
         mesh.scale(0.1);
         mesh.rotateX(Math.PI/2);
         mesh.faceColor(new Vec3(100,255,100));
         meshes.push(mesh);
 
-        // Add three more in a circle around the origin.
+        // Add three more meshes in a circle around the origin.
         var n = 3;
         for(var i=0; i < n; i++) {
             var m = geo2mesh(geo);
@@ -78,19 +84,22 @@
                                   Math.sin( i / n * 2 * Math.PI ) + Math.cos( i / n * 2 * Math.PI )
                         ).scale(6));
             m.faceColor(new Vec3(50,200,50));
+            m.updateBoundingBox();
             meshes.push(m);
         }
         
+        // Draw the floor.
         var surfaceN = 20, surfaceScale = 20;
         var surface = generateSurfaceMesh(surfaceN,surfaceN);
-        surface.scale(20);
+        surface.scale(surfaceScale);
         surface.translate(new Vec3(surfaceScale/4, 0.2, surfaceScale/4));
-        surface.faceColor(new Vec3(100,100,100));
+        surface.faceColor(new Vec3(100));
         meshes.push(surface);
 
         // Add lights
-        lights.push(new Light(new Vec3(-5, -3, 0), new Vec3(255,255,255), 16, 0.6));
-        lights.push(new Light(new Vec3(16, -9, 0), new Vec3(255,255,255), 64, 1));
+        lights.push(new Light(new Vec3(-5, -3, 0), new Vec3(255), 16, 0.6));
+        lights.push(new Light(new Vec3(16, -9, 0), new Vec3(255), 64, 1));
+        lights.push(new Light(new Vec3(0,-10,0), new Vec3(255), 128, 0.125));
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -109,15 +118,16 @@
                 requestAnimationFrame(render);
             }
 
-            // Rotate light, and change the color slightly.
+            // Rotate lights.
             var t = currentFrame / 25;
             lights[0].position = lights[0].position.rotateY(0.05);
-            lights[1].position = lights[1].position.rotateY(-0.01)
+            lights[1].position = lights[1].position.rotateY(-0.01);
+            lights[2].position = lights[2].position.add(new Vec3(0, Math.cos(t), 0).scale(0.1));
 
             // Rotate the object.
             meshes[0].rotateY(-0.01);
 
-            // Handle keyboard 
+            // Get display modes.
             var displayFaces            = keysToggled[KEY_Z],
                 displayWireframe        = keysToggled[KEY_X],
                 displayCoordinates      = keysToggled[KEY_C],
@@ -126,18 +136,36 @@
                 displayLightningTraces  = keysToggled[KEY_K],
                 displayLightOrbs        = keysToggled[KEY_J],
                 displayFog              = keysToggled[KEY_P],
-                displayUI               = keysToggled[KEY_U];
+                displayUI               = keysToggled[KEY_U],
+                displayBoundingBoxes    = keysToggled[KEY_B];
 
             // Apply the camera rotation to the movement.
-            var x = cameraMoveSpeed * Math.sin(camera.rotation.x),
-                y = cameraMoveSpeed * Math.cos(camera.rotation.x);
+            var x = Math.sin(camera.rotation.x) * cameraMoveSpeed,
+                y = Math.cos(camera.rotation.x) * cameraMoveSpeed;
 
+            // Handle keyboard keydowns.
             if(keysDown[KEY_W] || keysDown[KEY_UP])     { camera.position.x -= x; camera.position.z += y; } // Forward
             if(keysDown[KEY_S] || keysDown[KEY_DOWN])   { camera.position.x += x; camera.position.z -= y; } // Back
             if(keysDown[KEY_A] || keysDown[KEY_LEFT])   { camera.position.x -= y; camera.position.z -= x; } // Left
             if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
             if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
             if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
+
+            // Calculate bounding boxes.
+            meshes = meshes.filter(function(m) { return m.type != "bounding-box"; });
+            if(displayBoundingBoxes) {
+                for(var i=0, nmeshes = meshes.length; i < nmeshes; i++) {
+                    // Only create a bounding box for a model.
+                    if(meshes[i].type != "model") continue;
+                    // The first model is rotating, so we need to update it.
+                    if(i==0) {
+                        meshes[i].updateBoundingBox();
+                    }
+                    var boundingBox = meshes[i].boundingBox;
+                    boundingBox.faceColor(new Vec3(255,255,255));
+                    meshes.push(boundingBox);
+                }
+            }
 
             // Fill the depth buffer with all the faces from all the meshes.
             depthBuffer = [];
@@ -162,6 +190,14 @@
                 for(var i=0; i < depthBuffer.length; i++) {
                     mesh = meshes[depthBuffer[i].mesh];
                     face = mesh.faces[depthBuffer[i].face];
+
+                    // Select drawing mode.
+                    switch(mesh.type) {
+                        case "surface":         setPolygonFillAndStroke(); break;
+                        case "bounding-box":    continue;                  break;
+                        default:                setPolygonFill();          break;
+                    }
+
                     // Find all the points in the face and draw a polygon.
                     points = [];
                     for(j=0; j < face.vertices.length; j++) {
@@ -172,14 +208,13 @@
                     }
                     // Only draw if we can create atleast a line.
                     if(points.length >= 2) {
+                        var faceColor = face.color;
                         if(displayLightning && lights.length > 0) {
-                            var faceColor = face.color;
-                            var lightColor = new Vec3(0,0,0);
-
+                            var lightColor = shadow.color;
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
-                                var d = lights[j].position.distance(face.center(mesh.vertices));
-                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / (d*d) * lights[j].alpha);
+                                var d = lights[j].position.distanceSq(face.center(mesh.vertices));
+                                lightColor = mix(lightColor, lights[j].color, lights[j].brightness / d * lights[j].alpha);
 
                                 // Draw a line from the face to the light.
                                 if(displayLightningTraces) {
@@ -189,20 +224,19 @@
                                     line(fc.x, fc.y, lc.x, lc.y);
                                 }
                             }
-
-                            if(displayFog) {
-                                // Apply fog (use distance in depth buffer, saves a sqrt)
-                                var d = depthBuffer[i].distance;
-                                faceColor = mix(faceColor, new Vec3(0,0,0), 1 - Math.max(0, -(1/50 * d) + 1) );
-                            }
-
                             faceColor = mix(faceColor, lightColor, 0.5);
-                            color(faceColor.toRgb());
                         }
-                        else {
-                            color(face.color.toRgb());
+
+                        if(displayFog) {
+                            // Apply fog (use distance in depth buffer, saves a sqrt)
+                            var d = depthBuffer[i].distance;    // (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha
+                            faceColor = mix(faceColor, fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
                         }
                         
+                        // Gamma correction
+                        faceColor = faceColor.pow(1.0 / gamma);
+
+                        color(faceColor.toRgb());
                         polygon(points);
                     }
                 }
@@ -273,6 +307,7 @@
                 uitext(10,225,"Toggle light orbs (J): " + displayLightOrbs);
                 uitext(10,245,"Toggle fog (P): " + displayFog);
                 uitext(10,265,"Toggle UI (U): " + displayUI);
+                uitext(10,285,"Toggle bounding boxes (wireframe) (B): " + displayBoundingBoxes);
                 uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
                 if(!mouseLocked) {
@@ -311,8 +346,9 @@
         render();
 
         // Useful as commands.
-        var pause = function() { rendering = false; cancelAnimationFrame(); }
+        var pause = function()  { rendering = false; cancelAnimationFrame(); }
         var resume = function() { rendering = true; render(); }
+        var step   = function() { rendering = true; render(); rendering = false; }
         console.log("Toggle the renderer with 'pause()', and 'resume()'.");
     </script>
 </html>

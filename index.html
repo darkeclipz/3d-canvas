@@ -53,7 +53,7 @@
         fog = {color: new Vec3(10), alpha: 1, far: 50},
         shadow = {color: new Vec3(10), alpha: 1},
         backgroundColor = fog.color.toRgb(),
-        gamma = .95;
+        gamma = 0.975;
 
         // Pre-render initialization
         camera.position = new Vec3(-8.3, -7.3, -18.71);
@@ -74,7 +74,7 @@
         meshes.push(mesh);
 
         // Add three more meshes in a circle around the origin.
-        var n = 4;
+        var n = 3;
         for(var i=0; i < n; i++) {
             var m = geo2mesh(geo);
             m.scale(0.05);
@@ -229,8 +229,8 @@
 
                         if(displayFog) {
                             // Apply fog (use distance in depth buffer, saves a sqrt)
-                            var d = depthBuffer[i].distance;
-                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha);
+                            var d = depthBuffer[i].distance;    // (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha
+                            faceColor = mix(faceColor, fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
                         }
                         
                         // Gamma correction

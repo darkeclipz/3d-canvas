@@ -2,7 +2,7 @@ function Mesh() {
     this.vertices = [];
     this.edges = [];
     this.faces = [];
-    this.type = "none"; // Types are: cube, surface, model
+    this.type = "none"; // Types are: cube, surface, model, bounding-box
     this.scale = function(scalar) {
         for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].scale(scalar);

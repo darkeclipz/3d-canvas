@@ -39,17 +39,20 @@ function Vec3(x,y,z) {
     this.dot = function(v) { 
         return this.x*v.x + this.y*v.y + this.z*v.z;
     }
-    this.length = function() {
-        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
+    this.lengthSq = function() {
+        return this.x*this.x + this.y*this.y + this.z*this.z;
     }
-    this.distance = function(v) {
-        x = this.x-v.x; y = this.y-v.y; z = this.z-v.z;
-        return Math.sqrt(x*x + y*y + z*z);
+    this.length = function() {
+        return Math.sqrt(this.lengthSq());
     }
     this.distanceSq = function(v) {
         x = this.x-v.x; y = this.y-v.y; z = this.z-v.z;
         return x*x + y*y + z*z;    
     }
+    this.distance = function(v) {
+        return Math.sqrt(this.distanceSq(v));
+    }
+
     this.toRgb = function() {
         return "rgb(" + this.x + "," + this.y + "," + this.z + ")";
     }
@@ -60,11 +63,8 @@ function Vec3(x,y,z) {
         return new Vec3( Math.pow(this.x, exp), Math.pow(this.y, exp), Math.pow(this.z, exp) );
     }
     this.angle = function(v) {
-        var vxSq = v.x*v.x, vySq = v.y*v.y, vzSq = v.z*v.z;
-        var uxSq = u.x*u.x, uySq = u.y*u.y, uzSq = u.z*u.z;
-        return Math.acos( Math.abs( v.dot(u) ) / Math.sqrt( ( vxSq + vySq + vzSq ) * ( uxSq + uySq + uzSq ) ) );
+        return Math.acos( Math.abs( v.dot(u) ) / Math.sqrt( this.lengthSq()*v.lengthSq() ) );
     }
-    
 }
 
 // XY Vector: encapsulated vector maths.
