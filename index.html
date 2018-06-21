@@ -80,6 +80,8 @@
         triangle.faces.push(new Face([0,1,2], new Vec3(255)));
         triangle.scale(5);
         triangle.translate(new Vec3(0,-8,0));
+        triangle.type = "triangle";
+        triangle.name = "Example of a new mesh";
         meshes.push(triangle);
 
         var stl = cactus_body_stl;
@@ -168,11 +170,9 @@
             if(displayBoundingBoxes) {
                 for(var i=0, nmeshes = meshes.length; i < nmeshes; i++) {
                     // Only create a bounding box for a model.
-                    if(meshes[i].type != "model") continue;
+                    if(meshes[i].type == "surface") continue;
                     // The first model is rotating, so we need to update it.
-                    if(i==0) {
-                        meshes[i].updateBoundingBox();
-                    }
+                    meshes[i].updateBoundingBox();
                     var boundingBox = meshes[i].boundingBox;
                     if(boundingBox == null) {
                         continue;
@@ -311,8 +311,9 @@
                     mesh = mesh.model;
                     var v = transform(center, camera);
                     setTextAlignCenter();
-                    text(v.x, v.y - 20, mesh.name);
-                    text(v.x, v.y, " (Vertices: " + mesh.vertices.length + ", Edges: " + mesh.edges.length + ", Faces: " + mesh.faces.length + ")");
+                    var meshName = mesh.name ? " (" + mesh.name + ")" : ""
+                    text(v.x, v.y - 20, "Mesh: " + mesh.type + meshName);
+                    text(v.x, v.y, "(Vertices: " + mesh.vertices.length + ", Edges: " + mesh.edges.length + ", Faces: " + mesh.faces.length + ")");
                     setTextAlignLeft();
                 }
             }
