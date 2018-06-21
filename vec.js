@@ -60,7 +60,9 @@ function Vec3(x,y,z) {
         return new Vec3( Math.pow(this.x, exp), Math.pow(this.y, exp), Math.pow(this.z, exp) );
     }
     this.angle = function(v) {
-        return Math.acos( Math.abs( this.dot(v) ) / ( this.length() * v.length() ) );
+        var vxSq = v.x*v.x, vySq = v.y*v.y, vzSq = v.z*v.z;
+        var uxSq = u.x*u.x, uySq = u.y*u.y, uzSq = u.z*u.z;
+        return Math.acos( Math.abs( v.dot(u) ) / Math.sqrt( ( vxSq + vySq + vzSq ) * ( uxSq + uySq + uzSq ) ) );
     }
     
 }
