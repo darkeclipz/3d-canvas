@@ -56,6 +56,13 @@ function Vec3(x,y,z) {
     this.apply = function(f) {
         return new Vec3(f(this.x), f(this.y), f(this.z));
     }
+    this.pow = function(exp) {
+        return new Vec3( Math.pow(this.x, exp), Math.pow(this.y, exp), Math.pow(this.z, exp) );
+    }
+    this.angle = function(v) {
+        return Math.acos( Math.abs( this.dot(v) ) / ( this.length() * v.length() ) );
+    }
+    
 }
 
 // XY Vector: encapsulated vector maths.

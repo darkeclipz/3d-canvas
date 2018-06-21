@@ -50,8 +50,8 @@
         clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
         wireframeThickness = 1,
         lights = [],
-        fog = {color: new Vec3(10), alpha: 1},
-        shadow = {color: new Vec3(0), alpha: 1},
+        fog = {color: new Vec3(10), alpha: 1, far: 50},
+        shadow = {color: new Vec3(10), alpha: 1},
         backgroundColor = fog.color.toRgb(),
         gamma = .95;
 
@@ -66,7 +66,7 @@
         var stl = cactus_body_stl;
         var geo = parseStl(stl);
 
-        // Create a mesh from the geometry.
+        // Create a mesh from the geometry and add it to the scene.
         var mesh = geo2mesh(geo);
         mesh.scale(0.1);
         mesh.rotateX(Math.PI/2);
@@ -230,11 +230,11 @@
                         if(displayFog) {
                             // Apply fog (use distance in depth buffer, saves a sqrt)
                             var d = depthBuffer[i].distance;
-                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/50 * d) + 1) ) * fog.alpha);
+                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha);
                         }
                         
                         // Gamma correction
-                        faceColor = pow(faceColor, 1.0 / gamma);
+                        faceColor = faceColor.pow(1.0 / gamma);
 
                         color(faceColor.toRgb());
                         polygon(points);

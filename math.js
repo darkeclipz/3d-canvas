@@ -75,10 +75,10 @@ function max(l) {
     return x;
 }
 
-function pow(v, exp) {
-    return new Vec3( Math.pow(v.x, exp), Math.pow(v.y, exp), Math.pow(v.z, exp) );
-}
-
-function angle(v,u) {
-    return Math.acos( v.dot(u) / ( v.length() * u.length() ) );
+function angle2(v,u) {
+    // Somethings wrong here ...
+    return NaN;
+    var vxSq = v.x*v.x, vySq = v.y*v.y, vzSq = v.z*v.z;
+    var uxSq = u.x*u.x, uySq = u.y*u.y, uzSq = u.z*u.z;
+    return Math.acos( Math.abs( v.dot(u) ) / Math.sqrt( vxSq * uxSq * uySq * uzSq + vySq * uxSq * uySq * uzSq + vzSq * uxSq * uySq * uzSq ) );
 }
