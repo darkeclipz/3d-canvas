@@ -52,7 +52,8 @@
         lights = [],
         fog = {color: new Vec3(10), alpha: 1},
         shadow = {color: new Vec3(0), alpha: 1},
-        backgroundColor = fog.color.toRgb();
+        backgroundColor = fog.color.toRgb(),
+        gamma = .95;
 
         // Pre-render initialization
         camera.position = new Vec3(-8.3, -7.3, -18.71);
@@ -227,9 +228,12 @@
                         if(displayFog) {
                             // Apply fog (use distance in depth buffer, saves a sqrt)
                             var d = depthBuffer[i].distance;
-                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/50 * d) + 1) ) * fog.alpha );
+                            faceColor = mix(faceColor, fog.color, (1 - Math.max(0, -(1/50 * d) + 1) ) * fog.alpha);
                         }
                         
+                        // Gamma correction
+                        faceColor = pow(faceColor, 1.0 / gamma);
+
                         color(faceColor.toRgb());
                         polygon(points);
                     }

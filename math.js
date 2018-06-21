@@ -74,3 +74,7 @@ function max(l) {
     }
     return x;
 }
+
+function pow(v, exp) {
+    return new Vec3( Math.pow(v.x, exp), Math.pow(v.y, exp), Math.pow(v.z, exp) );
+}
