@@ -50,7 +50,8 @@
         clipBounds = new Vec2(innerWidth/2+clipMargin, innerHeight/2+clipMargin),
         wireframeThickness = 1,
         lights = [],
-        fog = {color: new Vec3(15), alpha: 0.8},
+        fog = {color: new Vec3(10), alpha: 1},
+        shadow = {color: new Vec3(0), alpha: 1},
         backgroundColor = fog.color.toRgb();
 
         // Pre-render initialization
@@ -72,7 +73,7 @@
         meshes.push(mesh);
 
         // Add three more meshes in a circle around the origin.
-        var n = 8;
+        var n = 4;
         for(var i=0; i < n; i++) {
             var m = geo2mesh(geo);
             m.scale(0.05);
@@ -206,7 +207,7 @@
                     if(points.length >= 2) {
                         var faceColor = face.color;
                         if(displayLightning && lights.length > 0) {
-                            var lightColor = new Vec3(0);
+                            var lightColor = shadow.color;
                             for(var j=0; j < lights.length; j++) {
                                 // Find distance to light source, and mix the light based on the distance.
                                 var d = lights[j].position.distanceSq(face.center(mesh.vertices));

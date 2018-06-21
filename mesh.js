@@ -118,9 +118,10 @@ function Edge(a,b) {
     this.b = b;
 }
 
-function Face(vertices, color) {
+function Face(vertices, color, surfaceNormal) {
     this.vertices = vertices;
     this.color = color;
+    this.surfaceNormal = surfaceNormal;
 
     // Calculates the center vertex position.
     this.center = function(vertexLookup) {
