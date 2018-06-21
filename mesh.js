@@ -85,6 +85,7 @@ function Mesh() {
         for(var i=0; i < faces.length; i++) {
             mesh.faces.push(new Face(faces[i], new Vec3(30)));
         }
+        mesh.model = this;
         this.boundingBox = mesh;
     }
 }

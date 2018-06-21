@@ -20,6 +20,8 @@ var stroke = true;
 var setPolygonFill = function() { fill = true; stroke = false; }
 var setPolygonStroke = function() { fill = false; stroke = true; }
 var setPolygonFillAndStroke = function() { fill = true; stroke = true; }
+var setTextAlignCenter = function() { ctx.textAlign = "center"; }
+var setTextAlignLeft = function() { ctx.textAlign = "left"; }
 
 // Initialize the canvas element.
 var createGlobalCanvas = function(element) {

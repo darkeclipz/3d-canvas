@@ -54,7 +54,7 @@ function Vec3(x,y,z) {
     }
 
     this.toRgb = function() {
-        return "rgb(" + this.x + "," + this.y + "," + this.z + ")";
+        return "rgb(" + rnd(this.x, 2) + "," + rnd(this.y, 2) + "," + rnd(this.z, 2) + ")";
     }
     this.apply = function(f) {
         return new Vec3(f(this.x), f(this.y), f(this.z));
