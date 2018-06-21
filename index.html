@@ -62,6 +62,7 @@
         toggleLightOrbs();
         toggleBoundingBoxes();
 
+
         camera.position = new Vec3(-0.64, -4.8, -15.69);
         camera.rotation = new Vec2(0.14, -0.11);
 
@@ -129,7 +130,7 @@
 
             for(var i=0; i < cactus.vertices.length; i++) {
                 var v = cactus.vertices[i];
-                var a = Math.cos(10*t + 0.482748324*i) * 0.0045 + Math.sin(5*t - 0.35325*i) * 0.0015;
+                var a = Math.cos(10*t + 0.482748327*i) * 0.0045 + Math.sin(5*t - 0.35327*i) * 0.0015;
                 var m = i % 3;
                 cactus.vertices[i] = v.add(new Vec3(m*a,m*a,m*a));
             }

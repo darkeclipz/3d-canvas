@@ -32,7 +32,7 @@ More examples (previous versions):
  * [STL loader](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-stl-loader.html) 
  * [Improved lightning + fog](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-improved-lightning+fog.html)
  * [Bounding boxes](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-bounding-boxes.html)
- * [Model info](https://darkeclipz.github.io/simple-3d-to-2d-projection/index-model-information.html)
+ * [Model info](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-model-information.html)
 ## Controls
 
 The widget supports the following keys:
