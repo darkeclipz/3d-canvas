@@ -121,7 +121,7 @@
                         v = transform(mesh.vertices[face.vertices[j]], camera);
                         points.push({x: v.x, y: v.y});
                     }
-                    color(face.color);
+                    color(face.color.toRgb());
                     polygon(points);
                 }
             }
