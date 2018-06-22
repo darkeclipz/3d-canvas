@@ -64,6 +64,9 @@ function Vec4(x,y,z,w) {
     this.toRgba = function() {
         return "rgba(" + rnd(this.x, 2) + "," + rnd(this.y, 2) + "," + rnd(this.z, 2) + ", " + rnd(this.w, 2) + ")";
     }
+    this.toRgb = function() {
+        return "rgb(" + rnd(this.x * this.w, 2) + "," + rnd(this.y * this.w, 2) + "," + rnd(this.z * this.w, 2) + ")";
+    }
     this.apply = function(f) {
         return new Vec4(f(this.x), f(this.y), f(this.z), f(this.w));
     }

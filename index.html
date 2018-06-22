@@ -63,7 +63,7 @@
         toggleLightOrbs();
 
         camera.position = new Vec3(33.27, -4.8, 0.35);
-        camera.rotation = new Vec2(1.58, -0.22);
+        camera.rotation = new Vec2(1.58, -0.12);
         camera.zoom = new Vec2(0.5);
 
         var surfaceScale = 25;
@@ -72,12 +72,13 @@
         surface.translate(new Vec3(0,3,0));
         meshes.push(surface);
 
-        var cactus = geo2mesh(parseStl(cactus_body_stl));
+        var geo = parseStl(cactus_body_stl);
+        var cactus = geo2mesh(geo);
         cactus.scale(0.2);
         cactus.rotateX(Math.PI/2);
         cactus.rotateY(Math.PI/2);
         cactus.translate(new Vec3(-20,2,0));
-        cactus.faceColor(new Vec3(20));
+        cactus.faceColor(new Vec3(50,200,50));
         meshes.push(cactus);
 
         var light = new Light(new Vec3(15,-1,0),   new Vec3(255), 16, 0.5);
@@ -104,7 +105,6 @@
 
             // Light animations.
             var t = currentFrame / 100;
-
             var alpha = 0.5 * (Math.cos(t) * 0.5 + 0.5) + 0.25
 
             light.position = light.position.rotateY(0.02);
@@ -189,9 +189,7 @@
                     points = [];
                     for(j=0; j < face.vertices.length; j++) {
                         v = transform(mesh.vertices[face.vertices[j]], camera);
-                        if(clip(v.x, -clipBounds.x, clipBounds.x) && clip(v.y, -clipBounds.y, clipBounds.y)) {
-                            points.push({x: v.x, y: v.y});
-                        }
+                        if(v) points.push({x: v.x, y: v.y});
                     }
                     // Only draw if we can create atleast a line.
                     if(points.length >= 2) {
@@ -256,10 +254,7 @@
                         var a = transform(meshes[i].vertices[meshes[i].edges[j].a], camera),
                             b = transform(meshes[i].vertices[meshes[i].edges[j].b], camera);
 
-                        if(clip(a.x, -clipBounds.x, clipBounds.x) && clip(a.y, -clipBounds.y, clipBounds.y)
-                        && clip(b.x, -clipBounds.x, clipBounds.x) && clip(b.y, -clipBounds.y, clipBounds.y)) {
-                            line(a.x,a.y,b.x,b.y, wireframeThickness);    
-                        }
+                        line(a.x,a.y,b.x,b.y, wireframeThickness); 
                     }
                 }
             }
