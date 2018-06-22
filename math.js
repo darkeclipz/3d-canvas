@@ -68,7 +68,6 @@ var rnd = function(value,decimals) {
 // Returns true if the value is within bounds, false otherwise.
 // Clipping is now done in the transform function within clip space.
 var clip = function(x,a,b) {
-    return true;
     if(x >= a && x <= b) return true;
     return false;
 }
