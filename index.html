@@ -71,15 +71,7 @@
         var surfaceScale = 25;
         var surface = generateSurfaceMesh(surfaceScale, surfaceScale);
         surface.scale(25);
-
-        var amplitude = 1/16;
-        var frequency = 1/6;
-
-        // surface.applyToY(function(x,y) { return amplitude * ( Math.sin(x*frequency*2.1)*4.5    + Math.cos(y*frequency*2.1)*4.5
-        //                                                     + Math.sin(x*frequency*1.72)*4     + Math.cos(y*frequency*3.1122)*4
-        //                                                     + Math.sin(x*frequency*2.221)*5    + Math.cos(y*frequency*2.221)*5
-        //                                                     + Math.sin(x*frequency*3.1122)*2.5 + Math.cos(y*frequency*1.72)*5 ); });
-
+        surface.applyToY(function(x,y) { return fbm(new Vec2(x,y)); } );
         surface.translate(new Vec3(0,3,0));
         meshes.push(surface);
 

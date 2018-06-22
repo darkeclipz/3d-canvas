@@ -131,6 +131,10 @@ function fract(x) {
     return x - Math.floor(x);
 }
 
+function floor(x) {
+    return Math.floor(x);
+}
+
 // -- Obsolete: but used in demos --
 
 var bool2int = function(b) {
@@ -141,4 +145,44 @@ function mix(v,u,alpha) {
     return new Vec3( (1-alpha) * v.x + alpha * u.x, 
                      (1-alpha) * v.y + alpha * u.y, 
                      (1-alpha) * v.z + alpha * u.z);
+}
+
+function random (st) {
+    return fract(Math.sin(st.dot(new Vec2(12.9898,78.233))*
+        43758.5453123));
+}
+
+// Based on Morgan McGuire @morgan3d
+// https://www.shadertoy.com/view/4dS3Wd
+function noise (st) {
+    var i = st.floor();
+    var f = st.fract();
+
+    // Four corners in 2D of a tile
+    var a = random(new Vec2(0       ).add(i) );
+    var b = random(new Vec2(1.0, 0.0).add(i) );
+    var c = random(new Vec2(0.0, 1.0).add(i) );
+    var d = random(new Vec2(1.0, 1.0).add(i) );
+
+    var u = f.vmult(f).vmult( new Vec2(3).subtract( f.scale(2) ) );
+
+    return interpolate(a, b, u.x) +
+            (c - a)* u.y * (1.0 - u.x) +
+            (d - b) * u.x * u.y;
+}
+
+var OCTAVES = 4;
+function fbm (st) {
+    // Initial values
+    var value = 1.61;
+    var amplitude = 1;
+    var frequency = 3;
+    //
+    // Loop of octaves
+    for (var i = 0; i < OCTAVES; i++) {
+        value += amplitude * noise(st.scale(frequency));
+        st = st.scale(2);
+        amplitude *= .5;
+    }
+    return value;
 }

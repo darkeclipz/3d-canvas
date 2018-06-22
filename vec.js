@@ -194,6 +194,13 @@ function Vec2(x,y) {
     this.add = function(v) {
         return new Vec2(this.x+v.x, this.y+v.y);
     }
+    this.subtract = function(v) {
+        var value = parseFloat(v);
+        if(!isNaN(value)) {
+            v = new Vec2(value, value);
+        }
+        return new Vec2(this.x-v.x, this.y-v.y);
+    }
     this.scale = function(scalar) {
         return new Vec2(scalar*this.x, scalar*this.y);
     }
@@ -209,6 +216,15 @@ function Vec2(x,y) {
     this.distance = function(v) {
         x = this.x-v.x; y = this.y-v.y;
         return Math.sqrt(x*x + y*y);
+    }
+    this.apply = function(f) {
+        return new Vec2(f(this.x), f(this.y));
+    }
+    this.floor = function() {
+        return this.apply(Math.floor);
+    }
+    this.fract = function() {
+        return this.subtract(this.apply(Math.floor));
     }
 }
 
