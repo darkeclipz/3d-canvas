@@ -219,7 +219,7 @@
                     // Find all the points in the face and draw a polygon.
                     points = [];
                     for(j=0; j < face.vertices.length; j++) {
-                        v = transform(mesh.vertices[face.vertices[j]], camera);
+                        v = transform2(mesh.vertices[face.vertices[j]], camera);
                         if(v) points.push({x: v.x, y: v.y});
                     }
                     // Only draw if we can create atleast a line.
@@ -270,8 +270,8 @@
 
                                 // Draw a line from the face to the light.
                                 if(displayLightningTraces) {
-                                    var fc = transform(face.center(mesh.vertices), camera);
-                                    var lc = transform(lights[j].position, camera);
+                                    var fc = transform2(face.center(mesh.vertices), camera);
+                                    var lc = transform2(lights[j].position, camera);
                                     var rgba = faceColor.mix(lights[j].color, luminosity * easing);
                                     color("rgba(" + rgba.x + ", " + rgba.y + ", " + rgba.z + ", " + luminosity + ")");
                                     line(fc.x, fc.y, lc.x, lc.y);
@@ -306,8 +306,8 @@
 
                     for(var j=0; j<meshes[i].edges.length; j++) {
 
-                        var a = transform(meshes[i].vertices[meshes[i].edges[j].a], camera),
-                            b = transform(meshes[i].vertices[meshes[i].edges[j].b], camera);
+                        var a = transform2(meshes[i].vertices[meshes[i].edges[j].a], camera),
+                            b = transform2(meshes[i].vertices[meshes[i].edges[j].b], camera);
 
                         line(a.x,a.y,b.x,b.y, wireframeThickness); 
                     }
@@ -323,7 +323,7 @@
                 }
                 for(var i=0; i<meshes.length; i++) {
                     for(var j=0; j<meshes[i].vertices.length; j++) {
-                        v = transform(meshes[i].vertices[j], camera);
+                        v = transform2(meshes[i].vertices[j], camera);
                         if(displayVertices) {
                             rectangle(v.x, v.y, 1, 1); // Drawing rectangles is way faster!
                         }
@@ -346,7 +346,7 @@
                     var face = mesh.faces[5];
                     var center = face.center(mesh.vertices).add(new Vec3(0, -0.5, 0));
                     mesh = mesh.model;
-                    var v = transform(center, camera);
+                    var v = transform2(center, camera);
                     setTextAlignCenter();
                     var meshName = mesh.name ? " (" + mesh.name + ")" : ""
                     text(v.x, v.y - 20, "Mesh: " + mesh.type + meshName);
@@ -359,7 +359,7 @@
             if(displayLightOrbs) {
                 font("16px " + fontFamily);
                 for(var i=0; i < lights.length; i++) {
-                    var l = transform(lights[i].position, camera);
+                    var l = transform2(lights[i].position, camera);
                     color(CL_WHITE);
                     text(l.x + 15, l.y + 5, "Light " + i + " (b: " + rnd(lights[i].brightness, 2) + ", α: " + rnd(lights[i].alpha, 2) + ")");
                     text(l.x + 15, l.y + 25, "Position: " + lights[i].position.toString());

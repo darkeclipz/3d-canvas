@@ -1,9 +1,23 @@
 // Transforms the point in 3D space to 2D screen coordinates.
-var projectionMatrix = null;
 var transform = function(vertex, camera) {
+    var x = vertex.x - camera.position.x, y = vertex.y - camera.position.y, z = vertex.z - camera.position.z;
+
+    var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
+    x = rotX.x; z = rotX.y;
+
+    var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
+    y = rotY.x; z = rotY.y;
+
+    var f = camera.fov / z;
+    return new Vec2(x * f, y * f);
+}
+
+// Transforms the point in 3D space to 2D screen coordinates.
+var projectionMatrix = null;
+var transform2 = function(vertex, camera) {
 
     // Initialize the projection matrix if there isn't any (older demo support)
-    if(!projectionMatrix) { projectionMatrix = projectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near); }
+    if(!projectionMatrix) { projectionMatrix = perspectiveProjectionMatrix(camera.zoom.x, camera.zoom.y, 25, 0.1); }
 
     // Move the 3D point into camera space.
     var x = vertex.x - camera.position.x, y = vertex.y - camera.position.y, z = vertex.z - camera.position.z;
