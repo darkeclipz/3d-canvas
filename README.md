@@ -56,11 +56,10 @@ The widget supports the following keys:
 
   * Implement forward/backward: Add a ray class, and find the angle between the camera, and the object we are looking at. If the angle is within bounds, the object is visible and in front of us. Otherwise, the object is on the sides, or back, and we do not want to draw it.
   * The Y-axis is upside down, so the entire coordinate system is upside down.
-  * Implement a better clipping algorithm. A mesh should not be displayed if _all of the points_ are outside of bounds.
 
 ## API
 
-Documentation for the API's in the render engine. 
+Documentation for the API's in the render engine. Note that these are kinda outdated, much more has been added. Yet again, source code is the better documentation.
 
 ### Rendering
 
