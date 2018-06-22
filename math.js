@@ -69,8 +69,8 @@ var rnd = function(value,decimals) {
 // Clipping is now done in the transform function within clip space.
 var clip = function(x,a,b) {
     return true;
-    //if(x >= a && x <= b) return true;
-    //return false;
+    if(x >= a && x <= b) return true;
+    return false;
 }
 
 // Interpolate on an interval.
