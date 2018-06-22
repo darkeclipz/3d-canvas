@@ -74,7 +74,7 @@
         meshes.push(surface);
 
         // Create the particle generator.
-        var particleGenerator = new ParticleGenerator(5000, 6, new Vec3(0), new Vec3(255,50,20), 0.04, 0.985);
+        var particleGenerator = new ParticleGenerator(756, 6, new Vec3(0), new Vec3(255,50,20), 0.04, 0.985, 7.5);
         meshes.push(particleGenerator);
 
         // Create a light source.
@@ -99,29 +99,17 @@
 
         // Main render loop.
         var previousPassTimestamp = +new Date();
-        var actualFps = 10;
         var render = function() {
-            if(rendering) {
-                requestAnimationFrame(render);
-            }
-            var debugUiText = [];
-            var t = currentFrame / 100;            
+            { // Animation t, handle keyboard events, set up projection matrix.
+                if(rendering) {
+                    requestAnimationFrame(render);
+                }
 
-            debugUiText.push(["Particles", particleGenerator.particles.length]);
+                var debugUiText = [];       // Will be displayed as debug UI text.
+                var t = currentFrame / 100; // Used to animate.
 
-            // Rotate the light.
-            var s = 0.750;
-            lightGroup.rotateY(0.035 * ( smoothstep(0.0, 0.175, fract(s*t)) - smoothstep(0.175, 0.75, fract(s*t)) ));
-
-            // Update the light and particle colors.
-            var col = new Vec3(0,2,4).add(3*t).apply(Math.cos).scale(0.5).add(0.5).scale(255);
-            particleGenerator.color = col;
-            light.color = col;
-
-            
-
-            // Get display modes.
-            var displayFaces            = keysToggled[KEY_Z],
+                // Get display modes.
+                var displayFaces        = keysToggled[KEY_Z],
                 displayWireframe        = keysToggled[KEY_X],
                 displayCoordinates      = keysToggled[KEY_C],
                 displayVertices         = keysToggled[KEY_V],
@@ -133,24 +121,40 @@
                 displayBoundingBoxes    = keysToggled[KEY_B],
                 displayProjection       = keysToggled[KEY_P];
 
-            // Set up the projection matrix.
-            if(displayProjection) {
-                projectionMatrix = perspectiveProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
-            } else {
-                projectionMatrix = orthographicProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
+                // Set up the projection matrix.
+                if(displayProjection) {
+                    projectionMatrix = perspectiveProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
+                } else {
+                    projectionMatrix = orthographicProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
+                }
+
+                // Apply the camera rotation to the movement.
+                var x = Math.sin(camera.rotation.x) * cameraMoveSpeed,
+                    y = Math.cos(camera.rotation.x) * cameraMoveSpeed;
+
+                // Handle keyboard keydowns.
+                if(keysDown[KEY_W] || keysDown[KEY_UP])     { camera.position.x -= x; camera.position.z += y; } // Forward
+                if(keysDown[KEY_S] || keysDown[KEY_DOWN])   { camera.position.x += x; camera.position.z -= y; } // Back
+                if(keysDown[KEY_A] || keysDown[KEY_LEFT])   { camera.position.x -= y; camera.position.z -= x; } // Left
+                if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
+                if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
+                if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
             }
 
-            // Apply the camera rotation to the movement.
-            var x = Math.sin(camera.rotation.x) * cameraMoveSpeed,
-                y = Math.cos(camera.rotation.x) * cameraMoveSpeed;
+            // -------------------------------ANIMATIONS---------------------------------
 
-            // Handle keyboard keydowns.
-            if(keysDown[KEY_W] || keysDown[KEY_UP])     { camera.position.x -= x; camera.position.z += y; } // Forward
-            if(keysDown[KEY_S] || keysDown[KEY_DOWN])   { camera.position.x += x; camera.position.z -= y; } // Back
-            if(keysDown[KEY_A] || keysDown[KEY_LEFT])   { camera.position.x -= y; camera.position.z -= x; } // Left
-            if(keysDown[KEY_D] || keysDown[KEY_RIGHT])  { camera.position.x += y; camera.position.z += x; } // Right
-            if(keysDown[KEY_E])                         { camera.position.y -= cameraMoveSpeed; }           // Up
-            if(keysDown[KEY_Q])                         { camera.position.y += cameraMoveSpeed; }           // Down
+            // Rotate the light.
+            var s = 0.750;
+            lightGroup.rotateY(0.035 * ( smoothstep(0.0, 0.175, fract(s*t)) - smoothstep(0.175, 0.75, fract(s*t)) ));
+
+            // Update the light and particle colors.
+            var col = new Vec3(0,2,4).add(3*t).apply(Math.cos).scale(0.5).add(0.5).scale(255);
+            particleGenerator.color = col;
+            light.color = col;
+            
+            debugUiText.push(["Particles", particleGenerator.particles.length]);
+
+            // --------------------------------------------------------------------------
 
             // Calculate bounding boxes.
             meshes = meshes.filter(function(m) { return m.type != "bounding-box"; });
@@ -391,23 +395,6 @@
 
                 uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
-                // Display text if the mouse is not locked.
-                if(!mouseLocked) {
-                    color(CL_GRAY);
-                    font("44px " + fontFamily);
-                    uitext(innerWidth/2-250, 100, "Click to look around");
-                    font("22px " + fontFamily);
-                    uitext(innerWidth/2-120, 150, "(No touch support)");
-                }
-
-                // Display an error if there is a mesh with more 
-                // than 64 coordinates, in coordinate display mode.
-                if(displayCoordinates && uiCoordinatesTooMany) {
-                    color(CL_RED);
-                    font("12px " + fontFamily);
-                    uitext(280, 144, uiCoordinatesTooMany);
-                }
-
                 // Display the debug UI text, in UI mode.
                 font("16px " + fontFamily);
                 color(CL_WHITE);
@@ -426,7 +413,7 @@
             passTimestamp = +new Date();
             renderTime = passTimestamp - previousPassTimestamp;
             previousPassTimestamp = passTimestamp;
-            actualFps = 1000 / renderTime;
+            var actualFps = 1000 / renderTime;
             font("16px " + fontFamily);
             color(CL_WHITE);
             uitext(10,25,"FPS: " + Math.round(actualFps));
