@@ -50,10 +50,10 @@
         mouseLocked = false,
         wireframeThickness = 1,
         lights = [],
-        fog = {color: new Vec3(10), alpha: 1, far: 150},
+        fog = {color: new Vec3(10), alpha: 1, far: 50},
         shadow = {color: new Vec3(10)},
         backgroundColor = new Vec3(10).toRgb(),
-        gamma = 0.92;
+        gamma = 1;
 
         // Pre-render initialization
         toggleProjection();
@@ -62,20 +62,27 @@
         toggleLightning();
         toggleLightOrbs();
 
-        camera.position = new Vec3(0.62, -11, -8.65);
-        camera.rotation = new Vec2(0.03, -0.18);
+        camera.position = new Vec3(-0.16, -5, -25.61);
+        camera.rotation = new Vec2(-0.03, -0.13);
         camera.zoom = new Vec2(0.5);
 
-        var surfaceScale = 20;
-        var water = generateSurfaceMesh(surfaceScale, surfaceScale);
-        water.scale(40);
-        meshes.push(water);
+        var n = 20;
+        var surface = generateSurfaceMesh(n, n);
+        surface.scale(20);
+        surface.applyToY(function(x,y) { return fbm(new Vec2(x,y).scale(0.4)); } );
+        
+        meshes.push(surface);
 
-        var particles = new ParticleGenerator(5000, 3, new Vec3(0, -10, 0), new Vec3(255,50,20), 0.08, 0.9915);
+        var particles = new ParticleGenerator(5000, 2, new Vec3(0), new Vec3(255,50,20), 0.01, 0.995);
         meshes.push(particles);
 
-        var light = new Light(new Vec3(0,-5,0), new Vec3(240), 50, 0.25);
+        var light = new Light(new Vec3(0), new Vec3(255,50,20), 64, 0.75);
         lights.push(light);
+
+        var lightGroup = new MeshGroup();
+        lightGroup.meshes.push(light);
+        lightGroup.meshes.push(particles);
+        lightGroup.translate(new Vec3(15,-2.75,0));
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -94,21 +101,16 @@
                 requestAnimationFrame(render);
             }
 
-            var debugUiText = [];
-
             // Used in the animations.
             var t = currentFrame / 100;
 
-            // Animate the water with an fBm;
-            water.applyToY(function(x,y) { return 3*fbm(new Vec2(-x/10, y/10+10*t).scale(0.1)); } );
-            water.faceColor(new Vec3(50,50,240));
+            var debugUiText = [];
+            lightGroup.rotateY(0.01);
+            var col = new Vec3(0,2,4).add(t).apply(Math.cos).scale(0.5).add(0.5).scale(255)
+            particles.color = col;
+            light.color = col;
 
-            // Add in a little white where the water is a bit higher; I'm not sure if this is
-            // working correctly. Wrap is a weird function.
-            for(var i=0; i < water.faces.length; i++) {
-                var faceCenter = water.faces[i].center(water.vertices);
-                water.faces[i].color = water.faces[i].color.mix(new Vec3(255), 0.11 * ( 1-clamp(wrap(faceCenter.y/2.5), 0, 0.5)) );
-            }
+            
 
             // Get display modes.
             var displayFaces            = keysToggled[KEY_Z],

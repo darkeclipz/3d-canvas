@@ -18,18 +18,13 @@ function ParticleGenerator(count, tick, pos, col, speed, fade) {
     this.alpha = 1;
     this.fade = fade;
     this.tick = tick;
-
     this.particles = [];
     this.type = "particle";
-
     this.particleCount = count;
-
     this.position = pos;
     this.vertices.push(pos);
     this.faces.push(new Face([0], new Vec4(0)));
-
     this.color = col;
-
     this.speed = speed;
 
     this.generate = function(st) {
@@ -42,7 +37,7 @@ function ParticleGenerator(count, tick, pos, col, speed, fade) {
         }
 
         // Remove particles that are too dim.
-        this.particles = this.particles.filter(function(p) { return p.alpha > 0.025; });
+        this.particles = this.particles.filter(function(p) { return p.alpha > 0.15; });
 
         // Add new particles.
         if(this.particles.length < this.particleCount) {
@@ -50,9 +45,15 @@ function ParticleGenerator(count, tick, pos, col, speed, fade) {
                 var x = random( st.add(new Vec2(0.01 + 0.0134324*i)) );
                 var y = random( st.add(new Vec2(0.02 + 0.0345435*i)) );
                 var z = random( st.add(new Vec2(0.03 + 0.0654654*i)) );
-                var particle = new Particle(this.position.add(new Vec3(x,y,z)), new Vec3(x,y,z).subtract(0.5).scale(2).scale(speed), this.color, 1 );
+                var particle = new Particle(this.position.add(new Vec3(x,y,z).scale(0.5)), new Vec3(x,y,z).subtract(0.5).scale(2).scale(speed), this.color, 1 );
                 this.particles.push(particle);
             }
         }
     }
+
+    this.translate = function(v)    { this.position = this.position.add(v); }
+    this.scale = function(scalar)   { this.position = this.position.scale(scalar); }
+    this.rotateX = function(angle)  { this.position = this.position.rotateX(angle); }
+    this.rotateY= function(angle)   { this.position = this.position.rotateY(angle); }
+    this.rotateZ = function(angle)  { this.position = this.position.rotateZ(angle); }
 }
