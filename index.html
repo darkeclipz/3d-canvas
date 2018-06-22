@@ -28,6 +28,7 @@
     </script>
     <script src="math.js"></script>
     <script src="vec.js"></script>
+    <script src="mat.js"></script>
     <script src="camera.js"></script>
     <script src="mesh.js"></script>
     <script src="light.js"></script>
@@ -60,51 +61,29 @@
         toggleLightning();
         toggleFog();
         toggleLightOrbs();
-        toggleBoundingBoxes();
-        toggleCoordinates();
 
-        camera.position = new Vec3(-0.64, -4.8, -15.69);
-        camera.rotation = new Vec2(0.14, -0.11);
+        camera.position = new Vec3(33.27, -4.8, 0.35);
+        camera.rotation = new Vec2(1.58, -0.22);
+        camera.zoom = new Vec2(0.5);
 
-        var cube = generateCubeMesh();
-        cube.faceColor(new Vec3(200,100,40));
-        meshes.push(cube);
-
-        var cube2 = generateCubeMesh();
-        cube2.translate(new Vec3(3,0,0));
-        cube2.faceColor(new Vec3(80,80,220));
-        meshes.push(cube2);
-
-        var triangle = new Mesh();
-        triangle.vertices = [new Vec3(0,0,1), new Vec3(-1,0,-1), new Vec3(1,0,-1)];
-        triangle.edges = [new Edge(0,1), new Edge(1,2), new Edge(2,0)];
-        triangle.faces.push(new Face([0,1,2], new Vec3(255)));
-        triangle.scale(5);
-        triangle.translate(new Vec3(0,-8,0));
-        triangle.type = "triangle";
-        triangle.name = "Example of a new mesh";
-        meshes.push(triangle);
-
-        var stl = cactus_body_stl;
-        var geometry = parseStl(stl);
-        var cactus = geo2mesh(geometry);
-        cactus.name = 'cactus_body_stl';
-        cactus.scale(0.1);
-        cactus.rotateX(Math.PI/2)
-        cactus.translate(new Vec3(-7,0,0));
-        cactus.updateBoundingBox();
-        cactus.faceColor(new Vec3(50,240,100));
-        meshes.push(cactus);
-
-        var surfaceScale = 40;
+        var surfaceScale = 25;
         var surface = generateSurfaceMesh(surfaceScale, surfaceScale);
         surface.scale(25);
         surface.translate(new Vec3(0,3,0));
         meshes.push(surface);
 
-        lights.push(new Light(new Vec3(0, -5, 0), new Vec3(255), 32, 0.2));
-        var light = new Light(new Vec3(15,-1,0), new Vec3(255), 16, 0.5);
+        var cactus = geo2mesh(parseStl(cactus_body_stl));
+        cactus.scale(0.2);
+        cactus.rotateX(Math.PI/2);
+        cactus.rotateY(Math.PI/2);
+        cactus.translate(new Vec3(-20,2,0));
+        cactus.faceColor(new Vec3(20));
+        meshes.push(cactus);
+
+        var light = new Light(new Vec3(15,-1,0),   new Vec3(255), 16, 0.5);
+        var pulse = new Light(new Vec3(-20,-15,1), new Vec3(255), 64, 0.33);
         lights.push(light);
+        lights.push(pulse);
 
         // Handles movement with the mouse.
         var mouseCallback = function(e) {
@@ -123,25 +102,16 @@
                 requestAnimationFrame(render);
             }
 
+            // Light animations.
             var t = currentFrame / 100;
-            //cube.rotateX( 0.05 * ( step(0.4, fract(t)) - step(0.6, fract(t)) ) );
-            cube2.translate(new Vec3(-3,0,0));
-            cube2.rotateY(0.01);
-            cube2.translate(new Vec3(3,0,0));
 
-            for(var i=0; i < cactus.vertices.length; i++) {
-                var v = cactus.vertices[i];
-                var a = Math.cos(10*t + 0.482748327*i) * 0.0045 + Math.sin(5*t - 0.35327*i) * 0.0015;
-                var m = i % 3;
-                cactus.vertices[i] = v.add(new Vec3(m*a,m*a,m*a));
-            }
-         
-            triangle.rotateY(0.01);
+            var alpha = 0.5 * (Math.cos(t) * 0.5 + 0.5) + 0.25
+
             light.position = light.position.rotateY(0.02);
             light.color = new Vec3(0,2,4).add(t).apply(Math.cos).scale(0.5).add(0.5).scale(255);
-            var alpha = 0.5 * (Math.cos(t) * 0.5 + 0.5) + 0.25
-            lights[0].alpha = alpha;
-            lights[1].brightness = 50 * alpha + 10;
+            light.brightness = 50 * alpha + 10;
+
+            pulse.alpha = 0.33 * ( smoothstep(0.35, 0.5, fract(t)) - smoothstep(0.5, 0.55, fract(t)) );
 
             // Get display modes.
             var displayFaces            = keysToggled[KEY_Z],
@@ -193,9 +163,6 @@
                     // Find the vertex in the center of the face and calculate the distance
                     // of this vertex to the camera.
                     distance = camera.position.distance(mesh.faces[j].center(mesh.vertices));
-                    if(displayFog && distance > fog.far) {
-                        continue;
-                    }
                     depthBuffer.push({mesh: i, face: j, distance: distance});
                 }
             }
@@ -228,12 +195,33 @@
                     }
                     // Only draw if we can create atleast a line.
                     if(points.length >= 2) {
+
+                        // Stores the resulting color of the face.
                         var faceColor = face.color;
+
+                        // Add fog. We want to do this before the light is blended in. This way, the light
+                        // will illuminate a fogged area.
+                        if(displayFog) {
+                            // Apply fog (use distance in depth buffer, saves a sqrt)
+                            var d = depthBuffer[i].distance;
+
+                            // Mix the fog color onto the faces.
+                            faceColor = faceColor.mix(fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
+                        }
+
+                        // Add lightning
                         if(displayLightning && lights.length > 0) {
+
+                            // The default light color that is applied to the face, is the shadow color.
+                            // If the light does not illuminate the object, it stays in this 'shadow' color.
                             var lightColor = shadow.color;
+
                             for(var j=0; j < lights.length; j++) {
-                                // Find distance to light source, and mix the light based on the distance.
+
+                                // Find the distance from the light source to the face.
                                 var d = lights[j].position.distanceSq(face.center(mesh.vertices));
+
+                                // Mix in the light, with the other lights.
                                 lightColor = lightColor.mix(lights[j].color, lights[j].brightness / d * lights[j].alpha);
 
                                 // Draw a line from the face to the light.
@@ -244,18 +232,15 @@
                                     line(fc.x, fc.y, lc.x, lc.y);
                                 }
                             }
-                            faceColor = faceColor.mix(lightColor, 0.5);
-                        }
 
-                        if(displayFog) {
-                            // Apply fog (use distance in depth buffer, saves a sqrt)
-                            var d = depthBuffer[i].distance;    // (1 - Math.max(0, -(1/fog.far * d) + 1) ) * fog.alpha
-                            faceColor = faceColor.mix(fog.color, clamp(d / fog.far, 0, 1) * fog.alpha );
+                            // Mix the light color onto the faces.
+                            faceColor = faceColor.mix(lightColor, 0.5);
                         }
                         
                         // Gamma correction
                         faceColor = faceColor.pow(1.0 / gamma);
 
+                        // Set color and draw the face.
                         color(faceColor.toRgb());
                         polygon(points);
                     }
@@ -370,6 +355,9 @@
                 uitext(10,45,"Press U to show UI.");
             }
 
+            // Show the value of fract(t), which animates the pulsing light.
+            uitext(innerWidth-90,25, "tfract="+rnd(fract(t), 2));
+
             // FPS
             passTimestamp = +new Date();
             renderTime = passTimestamp - previousPassTimestamp;
@@ -377,7 +365,7 @@
             var actualFps = 1000 / renderTime;
             font("16px " + fontFamily);
             color(CL_WHITE);
-            uitext(10,25,"FPS: " + Math.round(actualFps) + ", FOV: " + camera.fov);
+            uitext(10,25,"FPS: " + Math.round(actualFps));
 
             currentFrame++;
         }

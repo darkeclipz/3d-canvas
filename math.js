@@ -1,15 +1,42 @@
 // Transforms the point in 3D space to 2D screen coordinates.
+var M = null;
 var transform = function(vertex, camera) {
-    var x = vertex.x - camera.position.x, y = vertex.y - camera.position.y, z = vertex.z - camera.position.z;
 
+    // Create static matrix.
+    if(M == null) {
+        M = perspectiveProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.near, camera.far);
+    }
+
+    // Move the 3D point into camera space.
+    var x = vertex.x - camera.position.x, y = vertex.y - camera.position.y, z = vertex.z - camera.position.z;
     var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
     x = rotX.x; z = rotX.y;
-
     var rotY = rotate2d(new Vec2(y,z), camera.rotation.y);
     y = rotY.x; z = rotY.y;
 
-    var f = camera.fov / z;
-    return new Vec2(x * f, y * f);
+    // Create homogeneous 4D vector.
+    var v = new Vec4(x,y,z,1);
+
+    // Transform vector to clip space, aka the projection.
+    var clipSpace = M.mult(v);
+
+    // Clip anything that is not in the view frustum:
+    // X should be: -w < x < w (1)
+    // Y should be: -w < y < w (2)
+    // Z should be: -w < z < w (3)
+    var w = clipSpace.w;
+    if(clipSpace.x < -w || clipSpace.x > w || clipSpace.y < -w || clipSpace.y > w || clipSpace.z < -w || clipSpace.z > w) return false;
+    // if(clipSpace.z < 0 || clipSpace.z > clipSpace.w) { return false; } <<-- use for orthographic.
+
+    // Clip space to NDC space.
+    var normalizedDeviceCoordinates = v.to3D().to2D();
+
+    // NDC space to device coordinates.
+    var deviceMinResolution = Math.min(innerWidth, innerHeight);
+    deviceCoordinates = normalizedDeviceCoordinates.vmult(new Vec2(deviceMinResolution));
+
+    // Return result.
+    return new Vec2(deviceCoordinates.x, deviceCoordinates.y);
 }
 
 // Performs a rotation in 2D.
@@ -25,9 +52,11 @@ var rnd = function(value,decimals) {
 }
 
 // Returns true if the value is within bounds, false otherwise.
+// Clipping is now done in the transform function within clip space.
 var clip = function(x,a,b) {
-    if(x >= a && x <= b) return true;
-    return false;
+    return true;
+    //if(x >= a && x <= b) return true;
+    //return false;
 }
 
 // Interpolate on an interval.

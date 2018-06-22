@@ -67,12 +67,13 @@ function Mesh() {
     }
     this.updateBoundingBox = function() {
         var uX = this.unravelX(), uY = this.unravelY(), uZ = this.unravelZ();
-        var minX = min(uX), minY = min(uY), minZ = min(uZ);
-        var maxX = max(uX), maxY = max(uY), maxZ = max(uZ);
+        var minX = min(uX),       minY = min(uY),       minZ = min(uZ);
+        var maxX = max(uX),       maxY = max(uY),       maxZ = max(uZ);
         var vertices = [[minX, minY, maxZ], [maxX, minY, maxZ], [maxX, maxY, maxZ], [minX, maxY, maxZ],
                         [minX, minY, minZ], [maxX, minY, minZ], [maxX, maxY, minZ], [minX, maxY, minZ]];
-        var edges    = [[0,1], [1,2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4], [0, 4], [1, 5], [3, 7], [2, 6]];
-        var faces = [[0,1,2,3], [0,3,7,4], [5,4,7,6], [1,5,6,2], [3,2,6,7], [0,1,5,4]]
+        var edges    = [[0,1],  [1,2],  [2, 3], [3, 0], [4, 5], [5, 6], 
+                        [6, 7], [7, 4], [0, 4], [1, 5], [3, 7], [2, 6]];
+        var faces    = [[0,1,2,3], [0,3,7,4], [5,4,7,6], [1,5,6,2], [3,2,6,7], [0,1,5,4]]
 
         var mesh = new Mesh();
         mesh.type = "bounding-box";
