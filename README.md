@@ -35,6 +35,7 @@ More examples (previous versions):
  * [Model info](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-model-information.html)
  * [Projection matrices](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-projection-matrices.html)
  * [Water](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-water.html)
+ * [Particles](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-particles.html)
 
 ## Controls
 
