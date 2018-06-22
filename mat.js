@@ -40,7 +40,7 @@ var orthographicProjectionMatrix = function(zoomX, zoomY, far, near) {
     M.m11 = zoomX, 
     M.m22 = zoomY, 
     M.m33 = 2 / ( far - near ), 
-    M.m43 = -( far + near ) / ( far - near ),
+    M.m43 = - ( far + near ) / ( far - near ),
     M.m44 = 1;
     return M;
 }

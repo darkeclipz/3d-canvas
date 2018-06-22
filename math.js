@@ -1,6 +1,10 @@
 // Transforms the point in 3D space to 2D screen coordinates.
 var projectionMatrix = null;
 var transform = function(vertex, camera) {
+
+    // Initialize the projection matrix if there isn't any (older demo support)
+    if(!projectionMatrix) { projectionMatrix = projectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near); }
+
     // Move the 3D point into camera space.
     var x = vertex.x - camera.position.x, y = vertex.y - camera.position.y, z = vertex.z - camera.position.z;
     var rotX = rotate2d(new Vec2(x,z), camera.rotation.x);
@@ -18,9 +22,11 @@ var transform = function(vertex, camera) {
     // X should be: -w < x < w (1)
     // Y should be: -w < y < w (2)
     // Z should be: -w < z < w (3)
-    var w = clipSpace.w;
-    if(clipSpace.x < -w || clipSpace.x > w || clipSpace.y < -w || clipSpace.y > w || clipSpace.z < -w || clipSpace.z > w) return false;
-    //if(clipSpace.z < 0 || clipSpace.z > clipSpace.w) { return false; } <<-- use for orthographic.
+
+    // if(clipSpace.x < -w || clipSpace.x > w || clipSpace.y < -w || clipSpace.y > w || clipSpace.z < -w || clipSpace.z > w) return false;
+    // if(clipSpace.z < 0 || clipSpace.z > w) { return false; }//<<-- use for orthographic.
+
+    if(clipSpace.w < 0 || clipSpace.w < clipSpace.z) return false;
 
     // Clip space to NDC space.
     var normalizedDeviceCoordinates = v.to3D().to2D();
