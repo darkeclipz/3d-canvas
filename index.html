@@ -22,9 +22,10 @@
         var toggleLightning         = function() { keysToggled[KEY_L] = !keysToggled[KEY_L]; };  
         var toggleLightningTraces   = function() { keysToggled[KEY_K] = !keysToggled[KEY_K]; };  
         var toggleLightOrbs         = function() { keysToggled[KEY_J] = !keysToggled[KEY_J]; };
-        var toggleFog               = function() { keysToggled[KEY_P] = !keysToggled[KEY_P]; };
+        var toggleFog               = function() { keysToggled[KEY_O] = !keysToggled[KEY_O]; };
         var toggleUI                = function() { keysToggled[KEY_U] = !keysToggled[KEY_U]; };
         var toggleBoundingBoxes     = function() { keysToggled[KEY_B] = !keysToggled[KEY_B]; };
+        var toggleProjection        = function() { keysToggled[KEY_P] = !keysToggled[KEY_P]; };
     </script>
     <script src="math.js"></script>
     <script src="vec.js"></script>
@@ -57,6 +58,7 @@
         gamma = 0.975;
 
         // Pre-render initialization
+        toggleProjection();
         toggleFaces();
         toggleLightning();
         toggleFog();
@@ -77,11 +79,12 @@
         cactus.scale(0.2);
         cactus.rotateX(Math.PI/2);
         cactus.rotateY(Math.PI/2);
-        cactus.translate(new Vec3(-20,2,0));
+        cactus.translate(new Vec3(-21,2,0));
         cactus.faceColor(new Vec3(50,200,50));
         meshes.push(cactus);
 
-        var light = new Light(new Vec3(15,-1,0),   new Vec3(255), 16, 0.5);
+        var light = new Light(new Vec3(15,-1,0),   new Vec3(255), 32, 0.5);
+        light.position = light.position.rotateY(Math.PI);
         var pulse = new Light(new Vec3(-20,-15,1), new Vec3(255), 64, 0.33);
         lights.push(light);
         lights.push(pulse);
@@ -103,15 +106,27 @@
                 requestAnimationFrame(render);
             }
 
-            // Light animations.
+            var debugUiText = [];
+
+            // Used in the animations.
             var t = currentFrame / 100;
-            var alpha = 0.5 * (Math.cos(t) * 0.5 + 0.5) + 0.25
+            var alpha = 0.5 * (Math.cos(t) * 0.5 + 0.5) + 0.25;
 
-            light.position = light.position.rotateY(0.02);
+            debugUiText.push(["tfract", rnd(fract(t), 2)]);
+
+            // Animate the rotation and the color of the light.
+            light.position = light.position.rotateY( 0.03 * Math.cos(3*t) );
             light.color = new Vec3(0,2,4).add(t).apply(Math.cos).scale(0.5).add(0.5).scale(255);
-            light.brightness = 50 * alpha + 10;
+            light.brightness = 64 * alpha + 10;
 
+            debugUiText.push(["Light position", light.position.toString()]);
+            debugUiText.push(["Light color", light.color.toString()]);
+            debugUiText.push(["Light brightness", rnd(light.brightness, 2)]);
+
+            // Animate a pulsing light.
             pulse.alpha = 0.33 * ( smoothstep(0.35, 0.5, fract(t)) - smoothstep(0.5, 0.55, fract(t)) );
+
+            debugUiText.push(["Pulse alpha", rnd(pulse.alpha, 3)]);
 
             // Get display modes.
             var displayFaces            = keysToggled[KEY_Z],
@@ -121,9 +136,17 @@
                 displayLightning        = keysToggled[KEY_L],
                 displayLightningTraces  = keysToggled[KEY_K],
                 displayLightOrbs        = keysToggled[KEY_J],
-                displayFog              = keysToggled[KEY_P],
+                displayFog              = keysToggled[KEY_O],
                 displayUI               = keysToggled[KEY_U],
-                displayBoundingBoxes    = keysToggled[KEY_B];
+                displayBoundingBoxes    = keysToggled[KEY_B],
+                displayProjection       = keysToggled[KEY_P];
+
+            // Set up the projection matrix.
+            if(displayProjection) {
+                projectionMatrix = perspectiveProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
+            } else {
+                projectionMatrix = orthographicProjectionMatrix(camera.zoom.x, camera.zoom.y, camera.far, camera.near);
+            }
 
             // Apply the camera rotation to the movement.
             var x = Math.sin(camera.rotation.x) * cameraMoveSpeed,
@@ -318,20 +341,21 @@
             font("16px " + fontFamily);
             color(CL_WHITE);
             if(displayUI) {
-                
+                var boolAsText = function(b) { return b ? "enabled" : "disabled"; }
                 uitext(10,45,"Current frame: " + currentFrame);
                 uitext(10,65,"Camera position: " + camera.position.toString());
                 uitext(10,85,"Camera rotation: " + camera.rotation.toString());
-                uitext(10,105,"Toggle faces (Z): " + displayFaces);
-                uitext(10,125,"Toggle wireframe (X): " + displayWireframe);
-                uitext(10,145,"Toggle coordinates (C): " + displayCoordinates);
-                uitext(10,165,"Toggle vertices (V): " + displayVertices);
-                uitext(10,185,"Toggle lightning (L): " + displayLightning);
-                uitext(10,205,"Toggle lightning traces (K): " + displayLightningTraces);
-                uitext(10,225,"Toggle light orbs (J): " + displayLightOrbs);
-                uitext(10,245,"Toggle fog (P): " + displayFog);
-                uitext(10,265,"Toggle UI (U): " + displayUI);
-                uitext(10,285,"Toggle bounding boxes (wireframe) (B): " + displayBoundingBoxes);
+                uitext(10,105,"Toggle faces (Z): " + boolAsText(displayFaces));
+                uitext(10,125,"Toggle wireframe (X): " + boolAsText(displayWireframe));
+                uitext(10,145,"Toggle coordinates (C): " + boolAsText(displayCoordinates));
+                uitext(10,165,"Toggle vertices (V): " + boolAsText(displayVertices));
+                uitext(10,185,"Toggle lightning (L): " + boolAsText(displayLightning));
+                uitext(10,205,"Toggle lightning traces (K): " + boolAsText(displayLightningTraces));
+                uitext(10,225,"Toggle light orbs (J): " + boolAsText(displayLightOrbs));
+                uitext(10,245,"Toggle fog (O): " + boolAsText(displayFog));
+                uitext(10,265,"Toggle UI (U): " + boolAsText(displayUI));
+                uitext(10,285,"Toggle bounding boxes (wireframe) (B): " + boolAsText(displayBoundingBoxes));
+                uitext(10,305,"Toggle projection (P): " + (displayProjection ? "perspective" : "orthographic"));
                 uitext(10,innerHeight-15,"You can move with W, A, S, D, and go up/down with Q, E.");
 
                 if(!mouseLocked) {
@@ -346,12 +370,19 @@
                     font("12px " + fontFamily);
                     uitext(280, 144, uiCoordinatesTooMany);
                 }
+
+                // Debug UI text
+                font("16px " + fontFamily);
+                color(CL_WHITE);
+                setTextAlignRight();
+                for(var i=0; i < debugUiText.length; i++) {
+                    uitext(innerWidth-15,25 + 20 * i, debugUiText[i][0] + ": " + debugUiText[i][1]);
+                }
+                setTextAlignLeft();
+
             } else {
                 uitext(10,45,"Press U to show UI.");
             }
-
-            // Show the value of fract(t), which animates the pulsing light.
-            uitext(innerWidth-90,25, "tfract="+rnd(fract(t), 2));
 
             // FPS
             passTimestamp = +new Date();
