@@ -60,28 +60,31 @@
         toggleFaces();
         toggleFog();
         toggleLightning();
-        toggleLightOrbs();
 
-        camera.position = new Vec3(-0.16, -5, -25.61);
-        camera.rotation = new Vec2(-0.03, -0.13);
+        // Set the camera
+        camera.position = new Vec3(-0.16, -1.6, -25.61);
+        camera.rotation = new Vec2(0.06, -0.02);
         camera.zoom = new Vec2(0.5);
 
+        // Create a mountain like floor.
         var n = 20;
         var surface = generateSurfaceMesh(n, n);
         surface.scale(20);
         surface.applyToY(function(x,y) { return fbm(new Vec2(x,y).scale(0.4)); } );
-        
         meshes.push(surface);
 
-        var particles = new ParticleGenerator(5000, 2, new Vec3(0), new Vec3(255,50,20), 0.01, 0.995);
-        meshes.push(particles);
+        // Create the particle generator.
+        var particleGenerator = new ParticleGenerator(5000, 6, new Vec3(0), new Vec3(255,50,20), 0.04, 0.985);
+        meshes.push(particleGenerator);
 
+        // Create a light source.
         var light = new Light(new Vec3(0), new Vec3(255,50,20), 64, 0.75);
         lights.push(light);
 
+        // Combine the particle generator and light source into a mesh group.
         var lightGroup = new MeshGroup();
         lightGroup.meshes.push(light);
-        lightGroup.meshes.push(particles);
+        lightGroup.meshes.push(particleGenerator);
         lightGroup.translate(new Vec3(15,-2.75,0));
 
         // Handles movement with the mouse.
@@ -96,18 +99,23 @@
 
         // Main render loop.
         var previousPassTimestamp = +new Date();
+        var actualFps = 10;
         var render = function() {
             if(rendering) {
                 requestAnimationFrame(render);
             }
-
-            // Used in the animations.
-            var t = currentFrame / 100;
-
             var debugUiText = [];
-            lightGroup.rotateY(0.01);
-            var col = new Vec3(0,2,4).add(t).apply(Math.cos).scale(0.5).add(0.5).scale(255)
-            particles.color = col;
+            var t = currentFrame / 100;            
+
+            debugUiText.push(["Particles", particleGenerator.particles.length]);
+
+            // Rotate the light.
+            var s = 0.750;
+            lightGroup.rotateY(0.035 * ( smoothstep(0.0, 0.175, fract(s*t)) - smoothstep(0.175, 0.75, fract(s*t)) ));
+
+            // Update the light and particle colors.
+            var col = new Vec3(0,2,4).add(3*t).apply(Math.cos).scale(0.5).add(0.5).scale(255);
+            particleGenerator.color = col;
             light.color = col;
 
             
@@ -418,7 +426,7 @@
             passTimestamp = +new Date();
             renderTime = passTimestamp - previousPassTimestamp;
             previousPassTimestamp = passTimestamp;
-            var actualFps = 1000 / renderTime;
+            actualFps = 1000 / renderTime;
             font("16px " + fontFamily);
             color(CL_WHITE);
             uitext(10,25,"FPS: " + Math.round(actualFps));
