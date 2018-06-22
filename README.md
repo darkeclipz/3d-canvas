@@ -34,7 +34,8 @@ More examples (previous versions):
  * [Bounding boxes](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-bounding-boxes.html)
  * [Model info](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-model-information.html)
  * [Projection matrices](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-projection-matrices.html)
- 
+ * [Water](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-water.html)
+
 ## Controls
 
 The widget supports the following keys:
