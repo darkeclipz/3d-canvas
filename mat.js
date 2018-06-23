@@ -8,7 +8,12 @@ function Mat4() {
         return new Vec4( v.x * (this.m11 + this.m21 + this.m31 + this.m41),
                          v.y * (this.m12 + this.m22 + this.m32 + this.m42),
                          v.z * (this.m13 + this.m23 + this.m33 + this.m43),
-                         v.z * (this.m14 + this.m24 + this.m34 + this.m44) );
+               /* --> */ v.z * (this.m14 + this.m24 + this.m34 + this.m44) ); // Should be multiplied by v.w, however, 
+                                                                              // this breaks the projection matrix clipping.
+                                                                              // Should obviously be fixed someday.
+                                                                              // This is probably also the reason that the 
+                                                                              // orthographic projection is the same as the
+                                                                              // perspective projection.
     }
 
     this.toString = function() {

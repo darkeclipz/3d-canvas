@@ -38,11 +38,20 @@ function ParticleGenerator(count, tick, pos, col, speed, fade, radius) {
     this.updateBoundingBox = function() { return null; } 
 
     // Mesh transformation functions.
-    this.translate  = function(v)       { this.position = this.position.add(v); }
-    this.scale      = function(scalar)  { this.position = this.position.scale(scalar); }
+    this.translate  = function(v)       { this.position = this.position.add(v);         }
+    this.scale      = function(scalar)  { this.position = this.position.scale(scalar);  }
     this.rotateX    = function(angle)   { this.position = this.position.rotateX(angle); }
     this.rotateY    = function(angle)   { this.position = this.position.rotateY(angle); }
     this.rotateZ    = function(angle)   { this.position = this.position.rotateZ(angle); }
+
+    this.toOrigin = function () {
+        this.oldPosition = this.position;
+        var v = new Vec3(0).subtract(this.position);
+        this.translate(v);
+    }
+    this.toOldPosition = function() {
+        this.translate(this.oldPosition);
+    }
 
     // ------------------------------------------------------------------------------------
 

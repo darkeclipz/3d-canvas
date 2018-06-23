@@ -37,6 +37,7 @@ More examples (previous versions):
  * [Water](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-water.html)
  * [Particles](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-particles.html)
  * [Dark tunnel](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-dark-tunnel.html)
+ * [Animations](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-animations.html)
 
 ## Controls
 

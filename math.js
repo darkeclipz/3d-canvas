@@ -37,10 +37,23 @@ var transform2 = function(vertex, camera) {
     // Y should be: -w < y < w (2)
     // Z should be: -w < z < w (3)
 
-    // if(clipSpace.x < -w || clipSpace.x > w || clipSpace.y < -w || clipSpace.y > w || clipSpace.z < -w || clipSpace.z > w) return false;
-    // if(clipSpace.z < 0 || clipSpace.z > w) { return false; }//<<-- use for orthographic.
-
-    if(clipSpace.w < 0 || clipSpace.w < clipSpace.z) return false;
+    // If m44 is 1, this is an orthographic projection.
+    var w = clipSpace.w;
+    if(projectionMatrix.m44) {
+        if(w < 0 || w < clipSpace.z) return false;
+        
+        //if( clip(clipSpace.z, -w, w) || clip(clipSpace.x, -w, w) || clip(clipSpace.y, -w, w) ) return false;
+        //if(clip(clipSpace.z/w, -w, w)) return false;
+    }
+    // This is a perspective projection.
+    else {
+        //if(clipSpace.x < -w || clipSpace.x > w ) return false;
+        //if(clipSpace.z < -w || clipSpace.z > w) { return false; }
+        if(w < 0 || w < clipSpace.z) return false;
+        //if( clip(clipSpace.z, -w, w) || clip(clipSpace.x, -w, w) || clip(clipSpace.y, -w, w) ) return false;
+        //if(clip(clipSpace,z, -w, w)) return false;
+        //if(clip(clipSpace.z/w, -1, 1)) return false;
+    }
 
     // Clip space to NDC space.
     var normalizedDeviceCoordinates = v.to3D().to2D();

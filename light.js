@@ -8,4 +8,12 @@ function Light(position, color, brightness, alpha) {
     this.rotateX = function(angle)  { this.position = this.position.rotateX(angle); }
     this.rotateY= function(angle)   { this.position = this.position.rotateY(angle); }
     this.rotateZ = function(angle)  { this.position = this.position.rotateZ(angle); }
+    this.toOrigin = function () {
+        this.oldPosition = this.position;
+        var v = new Vec3(0).subtract(this.position);
+        this.translate(v);
+    }
+    this.toOldPosition = function() {
+        this.translate(this.oldPosition);
+    }
 }

@@ -3,12 +3,14 @@ function Mesh() {
     this.edges = [];
     this.faces = [];
     this.type = "none"; // Types are: cube, surface, model, bounding-box
+    this.position = new Vec3(0);
     this.scale = function(scalar) {
         for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].scale(scalar);
         }
     }
     this.translate = function(v) {
+        this.position = this.position.add(v);
         for(var i=0; i < this.vertices.length; i++) {
             this.vertices[i] = this.vertices[i].add(new Vec3(v.x, v.y, v.z));
         }
@@ -89,6 +91,14 @@ function Mesh() {
         mesh.model = this;
         this.boundingBox = mesh;
     }
+    this.toOrigin = function () {
+        this.oldPosition = this.position;
+        var v = new Vec3(0).subtract(this.position);
+        this.translate(v);
+    }
+    this.toOldPosition = function() {
+        this.translate(this.oldPosition);
+    }
 }
 
 function MeshGroup() {
@@ -121,6 +131,16 @@ function MeshGroup() {
     this.rotateZ = function(angle) {
         for(var i=0; i < this.meshes.length; i++) {
             this.meshes[i].rotateZ(angle);
+        }
+    }
+    this.toOrigin = function() {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].toOrigin();
+        }
+    }
+    this.toOldPosition = function() {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].toOldPosition();
         }
     }
 }
