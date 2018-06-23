@@ -76,7 +76,7 @@
         meshes.push(surface);
 
         // Create the particle generator.
-        var particleGenerator = new ParticleGenerator(5000, 6, new Vec3(0), new Vec3(255,50,20), 0.06, 0.98, 2);
+        var particleGenerator = new ParticleGenerator(5000, 3, new Vec3(0), new Vec3(255,50,20), 0.005, 0.9965, 2);
         meshes.push(particleGenerator);
 
         // Create a light source.
@@ -105,7 +105,7 @@
         // Side 2 (repeat)
         animator.new(200, 210, function(m,t,dt) { m.alpha += 0.75*dt; }, light, true);
         animator.new(210, 225, function(m,t,dt) { m.alpha -= 0.75*dt; }, light, true);
-        animator.new(225, 275, function(m,t,dt)   { m.translate(new Vec3(0,0,-24).scale(dt)); }, lightGroup, true);
+        animator.new(225, 275, function(m,t,dt) { m.translate(new Vec3(0,0,-24).scale(dt)); }, lightGroup, true);
 
         // Side 3 (repeat)
         animator.new(275, 285, function(m,t,dt) { m.alpha += 0.75*dt; }, light, true);

@@ -35,7 +35,7 @@ function Animation(s,e,f,m,r) {
         this.f(m, t, dt);
     }
 
-    // Replay the animation (pushed to the back of the queue);
+    // Replay the animation (pushed to the back of the queue).
     this.repeat = r;
 }
 
