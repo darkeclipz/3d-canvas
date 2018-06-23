@@ -22,11 +22,11 @@ function Particle(pos, dir, col, alpha) {
 *  - count : max amount of particles.
 *  - tick  : particles created per tick.
 *  - pos   : position of the new particles.
-*  - speed : size of the direction vector.
+*  - speed : size of the direction vector (how quickly it moves).
 *  - face  : how quickly it fades way; [0,1].
-*  - center: how far it starts from the generator.
+*  - radius: how far it starts from the generator.
 */
-function ParticleGenerator(count, tick, pos, col, speed, fade, center) {
+function ParticleGenerator(count, tick, pos, col, speed, fade, radius) {
 
     // Required for a mesh.
     this.vertices = [];
@@ -47,7 +47,7 @@ function ParticleGenerator(count, tick, pos, col, speed, fade, center) {
     // ------------------------------------------------------------------------------------
 
     // Create a dummy face, because we want to add that face to the depth buffer
-    // to approximate the distance. There is simply too many particles too 
+    // to approximate the distance. There are simply too many particles too 
     // solve a square root for, to get the distance, and show everything properly.
     this.vertices.push(pos);
     this.faces.push(new Face([0], new Vec4(0)));
@@ -74,7 +74,7 @@ function ParticleGenerator(count, tick, pos, col, speed, fade, center) {
     this.speed = speed;
 
     // Changes how far the particles starts from the generator.
-    this.center = center;
+    this.radius = radius;
 
     // Update and create new particles every tick. Requires a 
     // <vec2> to generate random values for the direction vector.
@@ -110,7 +110,7 @@ function ParticleGenerator(count, tick, pos, col, speed, fade, center) {
 
                 // Create a new particle at the position of the generator which
                 // is pointing in a random direction.
-                var particle = new Particle(this.position.add(v.scale(this.center)), v, this.color, 1 );
+                var particle = new Particle(this.position.add(v.scale(this.radius)), v, this.color, 1 );
                 this.particles.push(particle);
             }
         }

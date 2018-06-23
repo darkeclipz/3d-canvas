@@ -162,8 +162,7 @@
             // Light & particles
             var s = 5;
             lightGroup.translate(new Vec3(0,-lHeight,0));
-            // 0.15 * ( smoothstep(0, 0.175, fract(s*t) ) - smoothstep(0.175, 1, fract(s*t)))
-            lightGroup.rotateZ(0.04 );
+            lightGroup.rotateZ(0.15 * ( smoothstep(0, 0.175, fract(s*t) ) - smoothstep(0.175, 0.7, fract(s*t))));
             lightGroup.translate(new Vec3(0,lHeight,0));
         
             debugUiText.push(["Particles", particleGenerator.particles.length]);

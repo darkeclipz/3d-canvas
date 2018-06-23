@@ -108,9 +108,19 @@ function MeshGroup() {
             this.meshes[i].vmult(v);
         }
     }
+    this.rotateX = function(angle) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].rotateX(angle);
+        }
+    }
     this.rotateY = function(angle) {
         for(var i=0; i < this.meshes.length; i++) {
             this.meshes[i].rotateY(angle);
+        }
+    }
+    this.rotateZ = function(angle) {
+        for(var i=0; i < this.meshes.length; i++) {
+            this.meshes[i].rotateZ(angle);
         }
     }
 }
