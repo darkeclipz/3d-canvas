@@ -88,6 +88,13 @@ function Vec4(x,y,z,w) {
     this.to3D = function() {
         return new Vec3(this.x / this.w, this.y / this.w, this.z / this.w);
     }
+    this.normalize = function() {
+        var l = this.length();
+        return new Vec4(this.x / l, this.y / l, this.z / l, this.w / l);
+    }
+    this.cross = function(v) {
+        return this.length() * v.length () * this.angle(v);
+    }
 }
 
 // XYZ Vector: encapsulated vector maths.
@@ -180,6 +187,13 @@ function Vec3(x,y,z) {
     this.to2D = function() {
         return new Vec2(this.x / this.z, this.y / this.z);
     }
+    this.normalize = function() {
+        var l = this.length();
+        return new Vec3(this.x / l, this.y / l, this.z / l);
+    }
+    this.cross = function(v) {
+        return this.length() * v.length () * this.angle(v);
+    }
 }
 
 // XY Vector: encapsulated vector maths.
@@ -225,6 +239,13 @@ function Vec2(x,y) {
     }
     this.fract = function() {
         return this.subtract(this.apply(Math.floor));
+    }
+    this.normalize = function() {
+        var l = this.length();
+        return new Vec2(this.x / l, this.y / l);
+    }
+    this.cross = function(v) {
+        return this.length() * v.length () * this.angle(v);
     }
 }
 
