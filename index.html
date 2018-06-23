@@ -175,7 +175,7 @@
             if(displayBoundingBoxes) {
                 for(var i=0, nmeshes = meshes.length; i < nmeshes; i++) {
                     // Only create a bounding box for a model.
-                    if(meshes[i].type in ["surface", "particle"]) continue;
+
                     meshes[i].updateBoundingBox();
                     var boundingBox = meshes[i].boundingBox;
                     if(boundingBox == null) {
@@ -212,7 +212,7 @@
 
                     // Select drawing mode.
                     switch(mesh.type) {
-                        case "surface":         setPolygonFillAndStroke(); break;
+                        case "surface":         setPolygonFill();          break;
                         case "bounding-box":    continue;                  break;
                         case "particle":        setPolygonFill();          break;
                         default:                setPolygonFill();          break;
