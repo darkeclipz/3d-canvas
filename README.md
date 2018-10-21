@@ -8,36 +8,36 @@ The basic idea is to have a bunch of vertices in 3D space. Those vertices are ge
 
 ## How?
 
-I have written a [small explanation for the perspective projection](https://darkeclipz.github.io/simple-3d-to-2d-projection/simple-perspective-projection.html).
+I have written a [small explanation for the perspective projection](https://darkeclipz.github.io/3d-canvas/simple-perspective-projection.html).
 
 ## Live demo
 
-[Check out the latest live demo.](https://darkeclipz.github.io/simple-3d-to-2d-projection)
+[Check out the latest live demo.](https://darkeclipz.github.io/3d-canvas)
 
 More examples (previous versions):
 
- * [Single cube](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-single-cube.html)
- * [3x3 grid](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-3x3-grid.html)
- * [Faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-faces.html)
- * [Depth buffer + controls](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-depth-buffer.html)
- * [Wireframe](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-wireframe.html)
- * [Cube surface](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-cube-surface.html)
- * [Clipping (removes weird artifacts)](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-clipping.html)
- * [Weird bug](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-weird-bug.html)
- * [Surface mesh](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh.html)
- * [Multivariable functions](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-multivariable-functions.html) (Paste `functions.push({f: function(x,y) { return x*y; }, equation:"x*y"})` to create a new function.)
- * [Surface mesh edges + faces](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-surface-mesh-faces.html)
- * [Light](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-light.html)
- * [Colors](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-colors.html)
- * [STL loader](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-stl-loader.html) 
- * [Improved lightning + fog](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-improved-lightning+fog.html)
- * [Bounding boxes](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-bounding-boxes.html)
- * [Model info](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-model-information.html)
- * [Projection matrices](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-projection-matrices.html)
- * [Water](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-water.html)
- * [Particles](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-particles.html)
- * [Dark tunnel](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-dark-tunnel.html)
- * [Animations](https://darkeclipz.github.io/simple-3d-to-2d-projection/demo-animations.html)
+ * [Single cube](https://darkeclipz.github.io/3d-canvas/demo-single-cube.html)
+ * [3x3 grid](https://darkeclipz.github.io/3d-canvas/demo-3x3-grid.html)
+ * [Faces](https://darkeclipz.github.io/3d-canvas/demo-faces.html)
+ * [Depth buffer + controls](https://darkeclipz.github.io/3d-canvas/demo-depth-buffer.html)
+ * [Wireframe](https://darkeclipz.github.io/3d-canvas/demo-wireframe.html)
+ * [Cube surface](https://darkeclipz.github.io/3d-canvas/demo-cube-surface.html)
+ * [Clipping (removes weird artifacts)](https://darkeclipz.github.io/3d-canvas/demo-clipping.html)
+ * [Weird bug](https://darkeclipz.github.io/3d-canvas/demo-weird-bug.html)
+ * [Surface mesh](https://darkeclipz.github.io/3d-canvas/demo-surface-mesh.html)
+ * [Multivariable functions](https://darkeclipz.github.io/3d-canvas/demo-multivariable-functions.html) (Paste `functions.push({f: function(x,y) { return x*y; }, equation:"x*y"})` to create a new function.)
+ * [Surface mesh edges + faces](https://darkeclipz.github.io/3d-canvas/demo-surface-mesh-faces.html)
+ * [Light](https://darkeclipz.github.io/3d-canvas/demo-light.html)
+ * [Colors](https://darkeclipz.github.io/3d-canvas/demo-colors.html)
+ * [STL loader](https://darkeclipz.github.io/3d-canvas/demo-stl-loader.html) 
+ * [Improved lightning + fog](https://darkeclipz.github.io/3d-canvas/demo-improved-lightning+fog.html)
+ * [Bounding boxes](https://darkeclipz.github.io/3d-canvas/demo-bounding-boxes.html)
+ * [Model info](https://darkeclipz.github.io/3d-canvas/demo-model-information.html)
+ * [Projection matrices](https://darkeclipz.github.io/3d-canvas/demo-projection-matrices.html)
+ * [Water](https://darkeclipz.github.io/3d-canvas/demo-water.html)
+ * [Particles](https://darkeclipz.github.io/3d-canvas/demo-particles.html)
+ * [Dark tunnel](https://darkeclipz.github.io/3d-canvas/demo-dark-tunnel.html)
+ * [Animations](https://darkeclipz.github.io/3d-canvas/demo-animations.html)
 
 ## Controls
 
